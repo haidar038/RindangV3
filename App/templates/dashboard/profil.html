@@ -1,0 +1,712 @@
+{% extends 'dashboard/layout.html' %} {% block page_title %} Dashboard - Profil Pengguna {% endblock %} {% block container %}
+<!-- Header Page Title -->
+{% block head_scripts %}
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.css" rel="stylesheet" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.6.0/mapbox-gl.js"></script>
+<style>
+    #mapContainer,
+    #updateMapContainer {
+        width: 100%;
+        position: relative;
+    }
+
+    #fixedPin,
+    #updateFixedPin {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -185%); /* Adjust to center the pin */
+        width: 32px;
+        height: 32px;
+        background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/fb/Map_pin_icon_green.svg'); /* Example pin image */
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+        z-index: 10;
+    }
+</style>
+{% endblock %} {% block page_header_title %}Profil Pengguna{% endblock %}
+<!--  Header End -->
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+        <div class="col-lg-12 col-12 d-flex flex-column">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row col text-lg-start text-center">
+                        {% if not current_user.nama_lengkap %}
+                        <div class="alert alert-danger mb-3" role="alert">Segera lengkapi data diri anda untuk mengakses semua fitur secara penuh!</div>
+                        {% endif %}
+                        <!-- <h4 class="mb-4"><strong>Profil Pengguna</strong></h4> -->
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="d-flex gap-4 flex-column flex-lg-row">
+                                <form
+                                    id="profilePicForm"
+                                    class="d-flex align-items-center gap-3"
+                                    action="{{ url_for('views.update_profile_picture', id=current_user.id) }}"
+                                    method="post"
+                                    enctype="multipart/form-data"
+                                    style="display: inline-block"
+                                >
+                                    <div class="p-0 rounded-circle">
+                                        <div class="ratio-1x1">
+                                            <input type="file" accept="image/jpg, image/jpeg, image/png" name="profile_pic" id="profilePicInput" style="display: none" />
+                                            <img
+                                                src="{% if user.profile_pic %}
+                                                {{ url_for('static', filename='uploads/profile_pics/' + user.profile_pic) }}
+                                                {% else %} https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg {% endif %}"
+                                                alt="Profile Picture"
+                                                style="width: 96px; aspect-ratio: 1/1"
+                                                class="rounded-circle ratio-1x1 object-fit-cover"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-start">
+                                        <button type="button" class="btn btn-green mb-3" onclick="document.getElementById('profilePicInput').click()">Upload Foto Baru</button>
+                                        <small class="text-muted"><span class="text-danger">*</span> Ukuran <strong>800x800px</strong> menjadi rekomendasi</small>
+                                        <small class="text-muted"><span class="text-danger">*</span> Hanya format <strong>JPG</strong> dan <strong>PNG</strong> yang diizinkan</small>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card card-body border">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0" style="font-weight: bold">Informasi Pribadi</h5>
+                    <div class="text-lg-start">
+                        <button id="updateProfileBtn" type="button" class="btn btn-green w-auto" data-bs-toggle="modal" data-bs-target="#updateProfile"><i class="bi bi-pencil-square me-2"></i> Edit</button>
+                        <button id="upgradeAccountBtn" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#upgradeAccount"><i class="bi bi-arrow-up-circle me-2"></i>Upgrade Akun</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table text-start">
+                        <thead>
+                            <tr>
+                                <td>Nama</td>
+                                <td>Username</td>
+                                <td>Pekerjaan</td>
+                            </tr>
+                        </thead>
+                        <tbody class="fw-bolder">
+                            <tr>
+                                <td>{{ user.nama_lengkap }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.pekerjaan }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card card-body border mb-0">
+                <h5 class="card-title fw-bolder mb-3">Biodata</h5>
+                <textarea class="form-control" rows="5" readonly style="resize: none">{{ user.bio }}</textarea>
+            </div>
+            <!-- <div class="card">
+                <div class="card-body position-relative">
+                    <div class="container">
+                        <div class="row gap-3 col text-lg-start text-center">
+                            <h5><strong>Data Kebun</strong></h5>
+                            <div class="mb-3 d-flex gap-2 flex-row">
+                                <button id="addKebunBtn" type="button" class="btn btn-green w-auto d-flex gap-2 align-items-center" data-bs-toggle="modal" data-bs-target="#addKebun">Tambah Kebun</button>
+                                <button id="importKebunBtn" type="button" class="btn btn-light w-auto d-flex gap-2 align-items-center" data-bs-toggle="modal" data-bs-target="#importKebun">Import</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr>
+                                        <th>Nama Kebun</th>
+                                        <th>Luas Kebun</th>
+                                        <th>Koordinat Kebun</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                    {% for data_kebun in kebun %}
+                                    <tr class="align-middle">
+                                        <td>{{ data_kebun.nama }}</td>
+                                        <td>{{ data_kebun.luas_kebun }} ha</td>
+                                        <td>{{ data_kebun.koordinat }} ha</td>
+                                        <td>
+                                            <button id="updateKelBtn{{data_kebun.id}}" type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#updateKebun{{data_kebun.id}}">Ubah</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateProfile" tabindex="-1" aria-labelledby="updateProfileLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 fw-bold" id="updateProfileLabel">Ubah Profil</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('views.updateprofil', id=current_user.id ) }}" method="post">
+                    <input type="text" name="formType" id="formType" value="Data User" class="visually-hidden" />
+                    <div class="mb-3">
+                        <label for="nama" class="form-label fw-bold fs-4">Nama Lengkap</label>
+                        <input class="form-control" type="text" name="nama" id="nama" placeholder="contoh : Yusuf Hi Bisnu" value="{{ user.nama_lengkap }}" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-bold fs-4">Username</label>
+                        <input class="form-control" type="text" name="username" id="username" placeholder="contoh : ucup123" value="{{ user.username }}" />
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col">
+                                <label for="kelamin" class="form-label fw-bold fs-4">Jenis Kelamin</label>
+                                <select class="form-select" aria-label="kelamin" id="kelamin" name="kelamin">
+                                    <option value="Laki-Laki">Laki-Laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label for="pekerjaan" class="form-label fw-bold fs-4">Pekerjaan</label>
+                                <select class="form-select" aria-label="pekerjaan" id="pekerjaan" name="pekerjaan">
+                                    <option value="Petani">Petani</option>
+                                    <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+                                    <option value="Guru atau Dosen">Guru atau Dosen</option>
+                                    <option value="Tentara dan Polisi">Tentara dan Polisi</option>
+                                    <option value="Dokter">Dokter</option>
+                                    <option value="Nelayan">Nelayan</option>
+                                    <option value="IRT">IRT</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="regency" class="form-label fw-bold fs-4">Kabupaten/Kota</label>
+                                <select class="form-select" aria-label="regency" id="regency" name="regency">
+                                    <option value="">Pilih Kabupaten/Kota</option>
+                                    {% if user.kota %}
+                                    <option value="{{ user.kota }}" selected>{{ user.kota }}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label for="district" class="form-label fw-bold fs-4">Kecamatan</label>
+                                <select class="form-select" aria-label="district" id="district" name="district">
+                                    <option value="">Pilih Kecamatan</option>
+                                    {% if user.kec %}
+                                    <option value="{{ user.kec }}" selected>{{ user.kec }}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label for="village" class="form-label fw-bold fs-4">Kelurahan/Desa</label>
+                                <select class="form-select" aria-label="village" id="village" name="village">
+                                    <option value="">Pilih Kelurahan/Desa</option>
+                                    {% if user.kelurahan %}
+                                    <option value="{{ user.kelurahan }}" selected>{{ user.kelurahan }}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="bio" class="form-label">Biodata</label>
+                        <textarea class="form-control" id="bio" name="bio" rows="3">{{ user.bio }}</textarea>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-green w-100">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="modal fade" id="resetProfile" tabindex="-1" aria-labelledby="resetProfileLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 fw-bold" id="resetProfileLabel">Reset Informasi Kebun</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr class="m-0" />
+            <div class="modal-body">
+                <h5 class="text-center mb-3">Apakah anda yakin akan menghapus informasi kebun anda?</h5>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="#" class="btn btn-outline-dark text-center">Ya, saya yakin!</a>
+                    <button data-bs-dismiss="modal" class="btn btn-green text-center">Tidak</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="modal fade" id="upgradeAccount" tabindex="-1" aria-labelledby="upgradeAccountLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="upgradeAccountLabel">Upgrade Akun</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="upgradeAccountForm" action="{{ url_for('auth.upgrade_account', id=current_user.id) }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="accountType" class="form-label">Tipe Akun</label>
+                        <select class="form-select" id="accountType" name="accountType" required>
+                            <option value="">Pilih Tipe Akun</option>
+                            <option value="petani">Petani</option>
+                            <option value="ahli">Ahli</option>
+                        </select>
+                    </div>
+                    <div id="petaniFields" style="display: none">
+                        <div class="mb-3">
+                            <label for="luasLahan" class="form-label">Luas Lahan (hektar)</label>
+                            <input type="number" class="form-control" id="luasLahan" name="luasLahan" step="0.01" />
+                        </div>
+                    </div>
+                    <div id="ahliFields" style="display: none">
+                        <div class="mb-3">
+                            <label for="bidangKeahlian" class="form-label">Bidang Keahlian</label>
+                            <input type="text" class="form-control" id="bidangKeahlian" name="bidangKeahlian" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="gelar" class="form-label">Gelar</label>
+                            <input type="text" class="form-control" id="gelar" name="gelar" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="verificationDocument" class="form-label">Dokumen Verifikasi</label>
+                        <input type="file" class="form-control" id="verificationDocument" name="verificationDocument" accept=".pdf,.jpg,.jpeg,.png" required />
+                        <small class="form-text text-muted">Unggah dokumen pendukung (PDF, JPG, atau PNG)</small>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Ajukan Upgrade</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="importKebun" tabindex="-1" aria-labelledby="importKebunLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-center">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 fw-bold">Import Data Kebun</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('views.importkebun', id=current_user.id ) }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="file" name="excel_file" class="form-control" required />
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-green w-100">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addKebun" tabindex="-1" aria-labelledby="addKebunLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 fw-bold" id="addKebunLabel">Tambahkan Kebun</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('views.addkebun', id=current_user.id ) }}" method="post">
+                    <input type="text" name="formType" id="formType" value="Data Kebun" class="visually-hidden" />
+                    <div class="mb-3" id="mapContainer">
+                        <div id="map" style="height: 360px; width: 100%; position: relative" class="mb-3 map"></div>
+                        <div id="fixedPin"></div>
+                        <!-- This is the fixed pin at the center of the map -->
+                        <div class="row">
+                            <div class="col col-sm-12 d-flex justify-content-end gap-3 align-items-center">
+                                <input type="text" name="koordinat" id="koordinat" placeholder="Koordinat" class="form-control" readonly />
+                                <button type="button" id="applyPin" class="btn btn-green">Pilih</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col">
+                                <label for="nama_kebun" class="form-label fw-bold fs-4">Nama Kebun</label>
+                                <input class="form-control" type="text" name="nama_kebun" id="nama_kebun" placeholder="contoh : fora1" value="{{ kebun.nama }}" />
+                            </div>
+                            <div class="col">
+                                <label for="luaskebun" class="form-label fw-bold fs-4">Luas Lahan</label>
+                                <input class="form-control" type="number" name="luaskebun" id="luaskebun" placeholder="contoh : 12" value="{{ kebun.luas_kebun }}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-green w-100">Tambah</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE MODAL -->
+
+{% for data_kebun in kebun %}
+<div class="modal fade" id="delKebun{{ data_kebun.id }}" tabindex="-1" aria-labelledby="delKebun{{ data_kebun.id }}Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 fw-bold" id="delKebun{{ data_kebun.id }}Label">Hapus Kebun {{ data_kebun.nama }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr class="m-0" />
+            <div class="modal-body">
+                <h5 class="text-center mb-3">Apakah anda yakin akan menghapus kebun ini?</h5>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="{{ url_for('views.delkebun', id=data_kebun.id)  }}" class="btn btn-outline-danger text-center">Ya, saya yakin!</a>
+                    <button data-bs-dismiss="modal" class="btn btn-green text-center">Tidak</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- UPDATE MODAL -->
+
+{% for data_kebun in kebun %}
+<div
+    class="modal fade"
+    id="updateKebun{{data_kebun.id}}"
+    tabindex="-1"
+    aria-labelledby="updateKebun{{data_kebun.id}}Label"
+    aria-hidden="true"
+    data-kebun-id="{{data_kebun.id}}"
+    data-kebun-name="{{data_kebun.nama}}"
+    data-kebun-luas="{{data_kebun.luas_kebun}}"
+    data-kebun-koordinat="{{data_kebun.koordinat}}"
+>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 fw-bold" id="updateKebun{{data_kebun.id}}Label">Ubah Informasi Kebun</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('views.updateprofil', id=current_user.id ) }}" method="post">
+                    <input type="text" name="formType" id="formType" value="Data Kebun" class="visually-hidden" />
+                    <div class="mb-3" id="updateMapContainer">
+                        <div id="updateMap{{data_kebun.id}}" style="height: 360px; width: 100%; position: relative" class="mb-3 map"></div>
+                        <div id="fixedPin"></div>
+                        <!-- This is the fixed pin at the center of the map -->
+                        <div class="row">
+                            <div class="col d-flex justify-content-end gap-3 align-items-center">
+                                <input type="text" name="updateKoordinat" id="updateKoordinat{{data_kebun.id}}" placeholder="Koordinat" value="{{data_kebun.koordinat}}" class="form-control" readonly />
+                                <button type="button" id="updateApplyPin{{data_kebun.id}}" class="btn btn-green">Pilih</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col">
+                                <label for="nama_kebun" class="form-label fw-bold fs-4">Nama Kebun</label>
+                                <input class="form-control" type="text" name="nama_kebun" id="nama_kebun" placeholder="contoh : fora1" value="{{ data_kebun.nama }}" />
+                            </div>
+                            <div class="col">
+                                <label for="luaskebun" class="form-label fw-bold fs-4">Luas Lahan</label>
+                                <input class="form-control" type="number" step="0.01" name="luaskebun" id="luaskebun" placeholder="contoh : 12" value="{{ data_kebun.luas_kebun }}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center flex-column gap-1">
+                        <button type="submit" class="btn btn-green w-100">Simpan</button>
+                        <button id="delKebunBtn{{data_kebun.id}}" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delKebun{{data_kebun.id}}">Hapus</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+></script>
+<script>
+    // Mapbox access token
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaGFpZGFyMDM4IiwiYSI6ImNseWxtanB4ZzBkOGIyaXM2NXpqNHltbTEifQ.3UzDa633gOXAJMYeAJZBvQ';
+
+    // Global variables
+    let addKebunMap = null;
+    let addKebunMarker = null;
+
+    const addKebunToggleableLayers = [
+        { id: 'streets-v11', name: 'Normal' },
+        { id: 'light-v10', name: 'Light' },
+        { id: 'dark-v10', name: 'Dark' },
+    ];
+
+    // Function to initialize map for a specific kebun
+    function initializeKebunMap(kebunId) {
+        const mapContainer = document.getElementById(`updateMap${kebunId}`);
+        if (!mapContainer) {
+            console.error(`Map container for kebun ${kebunId} not found`);
+            return null;
+        }
+
+        // Clear the map container
+        mapContainer.innerHTML = '';
+
+        const modal = document.getElementById(`updateKebun${kebunId}`);
+        const koordinat = modal.getAttribute('data-kebun-koordinat');
+        const [lng, lat] = koordinat.split(', ').map(parseFloat);
+
+        const map = new mapboxgl.Map({
+            container: mapContainer,
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [lng, lat],
+            zoom: 12,
+        });
+
+        let marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+
+        map.addControl(new mapboxgl.NavigationControl());
+
+        const applyPinButton = document.getElementById(`updateApplyPin${kebunId}`);
+        if (applyPinButton) {
+            applyPinButton.addEventListener('click', function () {
+                const center = map.getCenter();
+                const koordinatInput = document.getElementById(`updateKoordinat${kebunId}`);
+                if (koordinatInput) {
+                    koordinatInput.value = `${center.lng.toFixed(6)}, ${center.lat.toFixed(6)}`;
+                    marker.setLngLat([center.lng, center.lat]);
+                }
+            });
+        }
+
+        return map;
+    }
+
+    // Function to initialize add kebun map
+    function initializeAddKebunMap() {
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer) {
+            console.error('Add kebun map container not found');
+            return;
+        }
+
+        // Clear the map container
+        mapContainer.innerHTML = '';
+
+        if (addKebunMap) {
+            addKebunMap.remove(); // Remove existing map if it exists
+        }
+
+        addKebunMap = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [127.3569173, 0.8016929],
+            zoom: 12,
+        });
+
+        addKebunMap.addControl(new mapboxgl.NavigationControl());
+
+        // Re-add event listener for apply pin
+        const applyPinButton = document.getElementById('applyPin');
+        if (applyPinButton) {
+            applyPinButton.addEventListener('click', function () {
+                const center = addKebunMap.getCenter();
+                const koordinatInput = document.getElementById('koordinat');
+                if (koordinatInput) {
+                    koordinatInput.value = `${center.lng.toFixed(6)}, ${center.lat.toFixed(6)}`;
+                    if (addKebunMarker) {
+                        addKebunMarker.setLngLat([center.lng, center.lat]);
+                    } else {
+                        addKebunMarker = new mapboxgl.Marker().setLngLat([center.lng, center.lat]).addTo(addKebunMap);
+                    }
+                }
+            });
+        }
+
+        addKebunMap.resize();
+    }
+
+    // Initialize maps when modals are opened
+    document.addEventListener('shown.bs.modal', function (event) {
+        const modal = event.target;
+        const kebunId = modal.getAttribute('data-kebun-id');
+        if (kebunId) {
+            setTimeout(() => {
+                const map = initializeKebunMap(kebunId);
+                if (map) {
+                    map.resize(); // Ensure the map renders correctly after the modal is fully shown
+                }
+            }, 100); // Small timeout to ensure modal is fully shown
+        }
+    });
+
+    // Event listener for add kebun modal
+    document.addEventListener('DOMContentLoaded', function () {
+        const addKebunModal = document.getElementById('addKebun');
+        if (addKebunModal) {
+            addKebunModal.addEventListener('shown.bs.modal', function () {
+                initializeAddKebunMap();
+            });
+        }
+    });
+
+    // Profile picture upload functionality
+    const profilePicInput = document.getElementById('profilePicInput');
+    const profilePicForm = document.getElementById('profilePicForm');
+
+    if (profilePicInput && profilePicForm) {
+        profilePicInput.addEventListener('change', () => {
+            profilePicForm.submit();
+        });
+    }
+
+    // Region selection functionality
+    $(document).ready(function () {
+        const API_BASE_URL = '/api/proxy';
+        const REGION_TYPES = {
+            regencies: { parentId: '82', childType: 'districts', label: 'Kabupaten/Kota' },
+            districts: { childType: 'villages', label: 'Kecamatan' },
+            villages: { label: 'Kelurahan/Desa' },
+        };
+
+        function showLoading(elementId) {
+            $(`#${elementId}`).prop('disabled', true);
+            $(`#${elementId}-loading`).removeClass('d-none');
+        }
+
+        function hideLoading(elementId) {
+            $(`#${elementId}`).prop('disabled', false);
+            $(`#${elementId}-loading`).addClass('d-none');
+        }
+
+        function populateSelect(elementId, data, label) {
+            const select = $(`#${elementId}`);
+            select.empty().append(`<option value="">Pilih ${label}</option>`);
+            $.each(data, function (index, region) {
+                select.append(`<option value="${region.name}" data-id="${region.id}">${region.name}</option>`);
+            });
+        }
+
+        async function fetchRegions(type, parentId) {
+            const url = parentId ? `${API_BASE_URL}/${type}/${parentId}.json` : `${API_BASE_URL}/${type}.json`;
+
+            try {
+                const response = await $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                });
+                return response;
+            } catch (error) {
+                console.error(`Failed to fetch ${type}:`, error);
+                throw error;
+            }
+        }
+
+        async function handleRegionChange(type, elementId) {
+            const selectedOption = $(`#${elementId} option:selected`);
+            const parentId = selectedOption.data('id');
+            const parentName = selectedOption.val();
+            if (!parentName) return;
+
+            const childType = REGION_TYPES[type].childType;
+            if (!childType) return;
+
+            const childElementId = childType.slice(0, -1);
+            showLoading(childElementId);
+
+            try {
+                const data = await fetchRegions(childType, parentId);
+                populateSelect(childElementId, data, REGION_TYPES[childType].label);
+            } catch (error) {
+                alert(`Failed to fetch ${REGION_TYPES[childType].label}. Please try again.`);
+            } finally {
+                hideLoading(childElementId);
+            }
+        }
+
+        // Initial load of regencies
+        (async function () {
+            showLoading('regency');
+            try {
+                const regencies = await fetchRegions('regencies', REGION_TYPES.regencies.parentId);
+                populateSelect('regency', regencies, REGION_TYPES.regencies.label);
+            } catch (error) {
+                alert('Failed to load initial data. Please refresh the page.');
+            } finally {
+                hideLoading('regency');
+            }
+        })();
+
+        // Event listeners
+        $('#regency').change(() => handleRegionChange('regencies', 'regency'));
+        $('#district').change(() => handleRegionChange('districts', 'district'));
+    });
+
+    $(document).ready(function () {
+        $('#accountType').change(function () {
+            const selectedType = $(this).val();
+            $('#petaniFields, #ahliFields').hide();
+            if (selectedType === 'petani') {
+                $('#petaniFields').show();
+            } else if (selectedType === 'ahli') {
+                $('#ahliFields').show();
+            }
+        });
+
+        $('#upgradeAccountForm').submit(function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        alert('Permintaan upgrade akun berhasil dikirim. Mohon tunggu verifikasi dari admin.');
+                        $('#upgradeAccount').modal('hide');
+                    } else {
+                        alert('Terjadi kesalahan: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('Terjadi kesalahan. Silakan coba lagi nanti.');
+                },
+            });
+        });
+    });
+
+    function updateUpgradeOptions() {
+        const userRole = '{{ current_user.role }}';
+        const accountTypeSelect = document.getElementById('accountType');
+        const petaniOption = accountTypeSelect.querySelector('option[value="petani"]');
+        const ahliOption = accountTypeSelect.querySelector('option[value="ahli"]');
+
+        if (userRole === 'petani') {
+            petaniOption.disabled = true;
+            petaniOption.style.display = 'none';
+        } else if (userRole === 'ahli') {
+            ahliOption.disabled = true;
+            ahliOption.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', updateUpgradeOptions);
+</script>
+<script></script>
+{% endblock %}

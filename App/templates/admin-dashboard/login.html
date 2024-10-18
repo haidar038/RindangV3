@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- ++++++++++++++++++++++++ META TAGS ++++++++++++++++++++++++ -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- OPENGRAPH META TAG -->
+        <meta name="keywords" content="rindang sistem informasi pangan kota ternate kebutuhan cabai barito rica tanam petani" />
+        <meta name="description" content="Rindang: Platform pangan online untuk Kota Ternate. Pangan murah, berkualitas, dan pemberdayaan petani." />
+        <meta property="og:title" content="RINDANG - Rica Tanam Dalam Kampung" />
+        <meta property="og:description" content="Sistem Informasi kebutuhan pangan dan informasi pangan Kota Ternate" />
+        <meta property="og:image" content="https://i.ibb.co.com/8dynFyq/Rindang-OG-Thumbnail.jpg" />
+        <meta property="og:url" content="https://rindang.net" />
+        <meta property="og:type" content="website" />
+
+        <!-- FAVICONS -->
+        <link rel="apple-touch-icon" sizes="180x180" href="../static/favicons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="../static/favicons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="../static/favicons/favicon-16x16.png" />
+        <link rel="manifest" href="../static/favicons/site.webmanifest" />
+        <link rel="mask-icon" href="../static/favicons/safari-pinned-tab.svg" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#b91d47" />
+        <meta name="theme-color" content="#ffffff" />
+        <title>RINDANG - Admin Login</title>
+
+        <!-- FONTS -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/plus-jakarta-display.min.css" />
+
+        <!-- ++++++++++++++++++++++++ CSS ++++++++++++++++++++++++ -->
+        <link rel="stylesheet" href="../static/style.css" />
+
+        <!-- ++++++++++++++++++++++++ CDNs ++++++++++++++++++++++++ -->
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet" />
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        {{ toastr.include_jquery() }} {{ toastr.include_toastr_css() }} {{ toastr.message() }}
+    </head>
+
+    <body class="h-100 bg-green-secondary">
+        <div class="container py-5">
+            <a href="{{ url_for('views.index' ) }}" class="nav-link fw-bold align-items-center mb-5">&larr; Kembali ke Beranda</a>
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-6">
+                    <div class="card border-0 shadow rounded-4 px-4 py-4">
+                        <div class="card-body login-form">
+                            <form action="" method="post">
+                                <div class="text-center mb-4">
+                                    <h2 class="fw-bold text-body-secondary">Admin Login</h2>
+                                    <p class="text-body-secondary">Masukkan Username dan Kata Sandi untuk masuk ke Dashboard Admin</p>
+                                </div>
+                                <div class="mb-3 text-center">
+                                    <label for="username" class="form-label fw-medium">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="Masukkan username" required />
+                                </div>
+                                <div class="mb-4 text-center">
+                                    <label for="userPassword" class="form-label fw-medium">Kata Sandi</label>
+                                    <input type="password" class="form-control" id="userPassword" name="userPassword" placeholder="Minimal 8 karakter" required />
+                                </div>
+                                <!-- <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                    <label class="form-check-label" for="flexCheckDefault"> Ingat saya </label>
+                                </div> -->
+                                <button type="submit" class="btn btn-green text-center fw-bold text-light w-100 mb-3">Masuk</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Wave elements -->
+        <svg class="position-fixed bottom-0 z-0" id="waveOne" style="transform: rotate(0deg); transition: 0.3s" viewBox="0 0 1440 240" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+                    <stop stop-color="rgba(137, 201, 123, 1)" offset="0%"></stop>
+                    <stop stop-color="rgba(137, 201, 123, 1)" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <path
+                style="transform: translate(0, 0px); opacity: 1"
+                fill="url(#sw-gradient-0)"
+                d="M0,96L80,112C160,128,320,160,480,160C640,160,800,128,960,96C1120,64,1280,32,1440,52C1600,72,1760,144,1920,172C2080,200,2240,184,2400,184C2560,184,2720,200,2880,176C3040,152,3200,88,3360,64C3520,40,3680,56,3840,72C4000,88,4160,104,4320,116C4480,128,4640,136,4800,136C4960,136,5120,128,5280,104C5440,80,5600,40,5760,24C5920,8,6080,16,6240,40C6400,64,6560,104,6720,132C6880,160,7040,176,7200,164C7360,152,7520,112,7680,80C7840,48,8000,24,8160,12C8320,0,8480,0,8640,28C8800,56,8960,112,9120,116C9280,120,9440,72,9600,80C9760,88,9920,152,10080,164C10240,176,10400,136,10560,104C10720,72,10880,48,11040,44C11200,40,11360,56,11440,64L11520,72L11520,240L11440,240C11360,240,11200,240,11040,240C10880,240,10720,240,10560,240C10400,240,10240,240,10080,240C9920,240,9760,240,9600,240C9440,240,9280,240,9120,240C8960,240,8800,240,8640,240C8480,240,8320,240,8160,240C8000,240,7840,240,7680,240C7520,240,7360,240,7200,240C7040,240,6880,240,6720,240C6560,240,6400,240,6240,240C6080,240,5920,240,5760,240C5600,240,5440,240,5280,240C5120,240,4960,240,4800,240C4640,240,4480,240,4320,240C4160,240,4000,240,3840,240C3680,240,3520,240,3360,240C3200,240,3040,240,2880,240C2720,240,2560,240,2400,240C2240,240,2080,240,1920,240C1760,240,1600,240,1440,240C1280,240,1120,240,960,240C800,240,640,240,480,240C320,240,160,240,80,240L0,240Z"
+            ></path>
+            <defs>
+                <linearGradient id="sw-gradient-1" x1="0" x2="0" y1="1" y2="0">
+                    <stop stop-color="rgba(252, 180, 94, 1)" offset="0%"></stop>
+                    <stop stop-color="rgba(252, 180, 94, 1)" offset="100%"></stop>
+                </linearGradient>
+            </defs>
+            <path
+                style="transform: translate(0, 50px); opacity: 0.9"
+                fill="url(#sw-gradient-1)"
+                d="M0,96L80,84C160,72,320,48,480,60C640,72,800,120,960,128C1120,136,1280,104,1440,76C1600,48,1760,24,1920,20C2080,16,2240,32,2400,36C2560,40,2720,32,2880,32C3040,32,3200,40,3360,56C3520,72,3680,96,3840,120C4000,144,4160,168,4320,184C4480,200,4640,208,4800,204C4960,200,5120,184,5280,156C5440,128,5600,88,5760,68C5920,48,6080,48,6240,76C6400,104,6560,160,6720,188C6880,216,7040,216,7200,180C7360,144,7520,72,7680,56C7840,40,8000,80,8160,88C8320,96,8480,72,8640,72C8800,72,8960,96,9120,116C9280,136,9440,152,9600,160C9760,168,9920,168,10080,156C10240,144,10400,120,10560,104C10720,88,10880,80,11040,92C11200,104,11360,136,11440,152L11520,168L11520,240L11440,240C11360,240,11200,240,11040,240C10880,240,10720,240,10560,240C10400,240,10240,240,10080,240C9920,240,9760,240,9600,240C9440,240,9280,240,9120,240C8960,240,8800,240,8640,240C8480,240,8320,240,8160,240C8000,240,7840,240,7680,240C7520,240,7360,240,7200,240C7040,240,6880,240,6720,240C6560,240,6400,240,6240,240C6080,240,5920,240,5760,240C5600,240,5440,240,5280,240C5120,240,4960,240,4800,240C4640,240,4480,240,4320,240C4160,240,4000,240,3840,240C3680,240,3520,240,3360,240C3200,240,3040,240,2880,240C2720,240,2560,240,2400,240C2240,240,2080,240,1920,240C1760,240,1600,240,1440,240C1280,240,1120,240,960,240C800,240,640,240,480,240C320,240,160,240,80,240L0,240Z"
+            ></path>
+        </svg>
+
+        {% block scripts %} {% endblock %} {{ toastr.include_toastr_js() }}
+    </body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- ++++++++++++++++++++++++ META TAGS ++++++++++++++++++++++++ -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- OPENGRAPH META TAG -->
+        <meta name="keywords" content="rindang sistem informasi pangan kota ternate kebutuhan cabai barito rica tanam petani" />
+        <meta name="description" content="Rindang: Platform pangan online untuk Kota Ternate. Pangan murah, berkualitas, dan pemberdayaan petani." />
+        <meta property="og:title" content="RINDANG - Rica Tanam Dalam Kampung" />
+        <meta property="og:description" content="Sistem Informasi kebutuhan pangan dan informasi pangan Kota Ternate" />
+        <meta property="og:image" content="https://i.ibb.co.com/8dynFyq/Rindang-OG-Thumbnail.jpg" />
+        <meta property="og:url" content="https://rindang.net" />
+        <meta property="og:type" content="website" />
+
+        <!-- FAVICONS -->
+        <link rel="apple-touch-icon" sizes="180x180" href="../static/favicons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="../static/favicons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="../static/favicons/favicon-16x16.png" />
+        <link rel="manifest" href="../static/favicons/site.webmanifest" />
+        <link rel="mask-icon" href="../static/favicons/safari-pinned-tab.svg" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#ffc40d" />
+        <meta name="theme-color" content="#ffffff" />
+        <title>RINDANG - Peta Sebaran</title>
+
+        <!-- FONTS -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/plus-jakarta-display.min.css" />
+
+        <!-- ++++++++++++++++++++++++ CSS ++++++++++++++++++++++++ -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+        <!-- ++++++++++++++++++++++++ CDNs ++++++++++++++++++++++++ -->
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet" />
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+        <!-- INTERNAL STYLING -->
+        <style>
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+
+            .b-example-divider {
+                width: 100%;
+                height: 3rem;
+                background-color: rgba(0, 0, 0, 0.1);
+                border: solid rgba(0, 0, 0, 0.15);
+                border-width: 1px 0;
+                box-shadow: inset 0 0.5em 1.5em rgba(0, 0, 0, 0.1), inset 0 0.125em 0.5em rgba(0, 0, 0, 0.15);
+            }
+
+            .b-example-vr {
+                flex-shrink: 0;
+                width: 1.5rem;
+                height: 100vh;
+            }
+
+            .bi {
+                vertical-align: -0.125em;
+                fill: currentColor;
+            }
+
+            .nav-scroller {
+                position: relative;
+                z-index: 2;
+                height: 2.75rem;
+                overflow-y: hidden;
+            }
+
+            .nav-scroller .nav {
+                display: flex;
+                flex-wrap: nowrap;
+                padding-bottom: 1rem;
+                margin-top: -1px;
+                overflow-x: auto;
+                text-align: center;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .btn-bd-primary {
+                --bd-violet-bg: #712cf9;
+                --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+                --bs-btn-font-weight: 600;
+                --bs-btn-color: var(--bs-white);
+                --bs-btn-bg: var(--bd-violet-bg);
+                --bs-btn-border-color: var(--bd-violet-bg);
+                --bs-btn-hover-color: var(--bs-white);
+                --bs-btn-hover-bg: #6528e0;
+                --bs-btn-hover-border-color: #6528e0;
+                --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+                --bs-btn-active-color: var(--bs-btn-hover-color);
+                --bs-btn-active-bg: #5a23c8;
+                --bs-btn-active-border-color: #5a23c8;
+            }
+
+            .bd-mode-toggle {
+                z-index: 1500;
+            }
+
+            .bd-mode-toggle .dropdown-menu .active .bi {
+                display: block !important;
+            }
+        </style>
+    </head>
+
+    <body class="h-100">
+        <!-- ++++++++++++++++++++++++ HEADER ++++++++++++++++++++++++ -->
+        <nav class="navbar navbar-expand-lg" aria-label="Offcanvas navbar large">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='img/rindang-logo.svg' ) }}" alt="" /></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2" aria-controls="offcanvasNavbar2" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar2" aria-labelledby="offcanvasNavbar2Label">
+                    <div class="offcanvas-header">
+                        <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='img/rindang-logo.svg' ) }}" alt="" /></a>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        {% if not current_user.is_authenticated %}
+                        <ul class="navbar-nav ms-lg-auto flex-column flex-lg-row mb-lg-0 column-gap-lg-3">
+                            <li class="nav-item mb-2 mb-lg-0">
+                                <a id="nav" class="nav-link" aria-current="page" href="{{ url_for('auth.login' ) }}">Masuk</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-warning btn-yellow px-4" href="{{ url_for('auth.register' ) }}">Daftar</a>
+                            </li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ++++++++++++++++++++++++ MAIN ++++++++++++++++++++++++ -->
+        <main class="mb-5 h-100">
+            <div id="map" style="width: 100%; height: 100%"></div>
+        </main>
+
+        <!-- ++++++++++++++++++++++++ SCRIPTS PART ++++++++++++++++++++++++ -->
+        <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
+        <script>
+            //var center_spot = L.marker([0.805211567917295, 127.33528798258935])
+            var kebun1sasa = L.marker([0.755278, 127.326389]).bindPopup('Kebun 1 Sasa'),
+                kebun1kulaba = L.marker([0.846389, 127.361944]).bindPopup('Kebun 1 Kulaba'),
+                kebun2kulaba = L.marker([0.841667, 127.358889]).bindPopup('Kebun 2 Kulaba'),
+                kebun1kalumpang = L.marker([0.825278, 127.378056]).bindPopup('Kebun 1 Kalumpang'),
+                kebun1fora = L.marker([0.768611, 127.316944]).bindPopup('Kebun 1 Foramadihi'),
+                kebun2fora = L.marker([0.768611, 127.3175]).bindPopup('Kebun 2 Foramadihi');
+
+            var kebun = L.layerGroup([kebun1sasa, kebun1kalumpang, kebun1kulaba, kebun2kulaba, kebun1fora, kebun2fora]);
+
+            var normal = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 20,
+                attribution: '© OpenStreetMap',
+            });
+
+            var ligth_map = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
+                minZoom: 0,
+                maxZoom: 20,
+                attribution:
+                    '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                ext: 'png',
+            });
+
+            var dark_map = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
+                minZoom: 0,
+                maxZoom: 20,
+                attribution:
+                    '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                ext: 'png',
+            });
+
+            var map = L.map('map', {
+                center: [0.8016929, 127.3569173],
+                zoom: 12,
+                layers: [normal, kebun],
+            });
+
+            var baseMaps = {
+                Normal: normal,
+                Light: ligth_map,
+                Dark: dark_map,
+            };
+
+            var overlayMaps = {
+                Kebun: kebun,
+            };
+
+            var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+        </script>
+        <script>
+            $(document).ready(function () {
+                $('#toggle-sidebar-btn').click(function () {
+                    $('.sidebar').toggleClass('active');
+                });
+            });
+        </script>
+    </body>
+</html>

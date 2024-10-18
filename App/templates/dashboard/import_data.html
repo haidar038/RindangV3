@@ -1,0 +1,23 @@
+{% extends 'dashboard/layout.html' %} {% block page_title %} Import Data Produksi {% endblock %} {% block container %}
+<div class="container-fluid">
+    <div class="row">
+        <h3 class="mb-4">Impor Data Produksi</h3>
+        <div class="col">
+            <form action="{{ url_for('views.import_data_pangan') }}" method="post" enctype="multipart/form-data">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="import_type" id="penanaman" value="penanaman" checked />
+                    <label class="form-check-label" for="penanaman"> Import Data Penanaman </label>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="radio" name="import_type" id="panen" value="panen" />
+                    <label class="form-check-label" for="panen"> Import Data Panen </label>
+                </div>
+                <div class="mb-3">
+                    <input type="file" name="excel_file" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-green">Import Data</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

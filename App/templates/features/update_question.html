@@ -1,0 +1,42 @@
+{% extends 'features/base.html' %}
+<!-- BLOCK -->
+{% block title %} Rindang Talk {% endblock %}
+<!--  -->
+{% block content %}
+<div class="row justify-content-lg-center">
+    <div class="col-12 col-lg-8">
+        <div class="d-flex flex-column align-items-center">
+            <img src="{{ url_for('static', filename='logo/RindangTalk.svg' ) }}" alt="RindangTalk" height="132px" class="mb-5" />
+            <p class="mb-5 h5 text-center">Diskusi dan tanya jawab tentang pertanian bersama <br /><strong>Rindang Talk</strong></p>
+
+            <div class="card card-body shadow border-0 rounded-4 p-4">
+                <form action="" method="post">
+                    <div class="mb-3">
+                        <label for="nama_lengkap" class="form-label text-center w-100 fw-bold text-dark">Nama</label>
+                        <input type="text" name="nama_lengkap" class="form-control bg-body-secondary text-center" id="nama_lengkap" placeholder="Nama Lengkap" value="{{ current_user.nama_lengkap }}" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label text-center w-100 fw-bold text-dark">Alamat Email</label>
+                        <input type="email" name="email" class="form-control bg-body-secondary text-center" id="email" placeholder="nama@gmail.com" value="{{ current_user.email }}" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="question" class="form-label fw-bold w-100 text-center">Tulis Pertanyaanmu</label>
+                        <textarea class="form-control" name="question" id="question" rows="4" required>{{ data.question }}</textarea>
+                    </div>
+                    <div class="m-b3">
+                        <div class="alert alert-success d-flex gap-2">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <small class="text-muted">
+                                Pertanyaan akan dijawab oleh Ahli Pertanian melalui email Anda. Tim Rindang akan mempublikasikan pertanyaan dan jawaban ini di halaman Rindang TALK tanpa mencantumkan nama atau alamat email Anda.
+                            </small>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-green fw-bold text-light">Kirim Pertanyaan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+<!-- SCRIPT -->

@@ -1,0 +1,13 @@
+venv
+App/static/js/jsPDF-master
+App/static/admin
+App/venv
+__pycache__
+instance
+rindang_digifarm.db
+.vscode
+.env
+test.py
+report_Sasa.pdf
+api
+mlbb.py

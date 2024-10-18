@@ -1,0 +1,53 @@
+{% extends 'features/base.html' %}
+<!-- BLOCK -->
+{% block title %} Rindang Pedia {% endblock %}
+<!-- BLOCK -->
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <div class="d-flex flex-column align-items-center">
+            <img src="{{ url_for('static', filename='logo/RindangPedia.svg' ) }}" alt="RindangPedia" width="320px" class="mb-3" />
+            <p class="mb-5 h5 text-center fw-normal">Kolaborasi, diskusi, dan update berita seputar pertanian</p>
+        </div>
+        <div class="d-flex gap-3">
+            <div class="vr rounded-pill bg-red opacity-100" style="width: 6px"></div>
+            <div class="d-flex flex-column">
+                <h1>Artikel Rindang</h1>
+                <p class="mb-1 text-muted">Baca berbagai informasi terbaru seputar agrikultur untuk meningkatkan pemahamanmu!</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8 col-sm-12 mb-3 mb-lg-0">
+        {% for item in articles %}
+        <!--  -->
+        {% if not item.is_drafted and item.is_approved %}
+        <a target="_blank" class="link-dark link-underline-opacity-0 link-opacity-75-hover" href="{{ url_for('views.read_article', id=item.id ) }}">
+            <div class="ratio ratio-21x9 mb-3">
+                <img src="{{ url_for('static', filename='galery/pict1.jpg' ) }}" class="img-fluid w-100 rounded-4 object-fit-cover" alt="" />
+            </div>
+            <h2>{{ item.judul }}</h2>
+        </a>
+        <p>{{ shorten(item.content, width=120) | safe }}</p>
+        {% else %}
+        <div class="d-flex justify-content-center">
+            <em class="text-muted h5 text-center">-- Belum ada artikel --</em>
+        </div>
+        {% endif %}
+        <!--  -->
+        {% endfor %}
+    </div>
+    <div class="col-lg-4 col-sm-12">
+        {% for item in articles %}
+        <div class="d-flex align-items-center gap-3">
+            <div class="ratio ratio-1x1 mb-3">
+                <img src="{{ url_for('static', filename='galery/pict1.jpg' ) }}" class="img-fluid w-100 rounded-4 object-fit-cover" alt="" />
+            </div>
+            <div>
+                <p class="fw-bold">{{ item.judul }}</p>
+                <p>{{ shorten(item.content, width=56) | safe }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

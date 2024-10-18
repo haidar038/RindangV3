@@ -1,0 +1,206 @@
+{% extends 'admin-dashboard/layout.html' %} {% block title %} Admin Dashboard - Data Kelurahan {% endblock %} {% block head %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% endblock %} {% block container %}
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row align-items-start">
+                <div class="col-12">
+                    <div class="card card-body">
+                        <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
+                            <div class="mb-3 mb-sm-0">
+                                <h5 class="card-title text-dark-emphasis">
+                                    <strong>Informasi Statistik Produksi - <span class="text-red">Kelurahan {{ kelurahan.nama }}</span></strong>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="date-filter mb-3 row-gap-3 row">
+                            <div class="col d-flex flex-column">
+                                <label for="start-date">Start Date:</label>
+                                <input class="form-control" type="date" id="start-date" name="start-date" />
+                            </div>
+                            <div class="col d-flex flex-column">
+                                <label for="end-date">End Date:</label>
+                                <input class="form-control" type="date" id="end-date" name="end-date" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <button class="w-100 btn btn-green" id="filter-button">Filter</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="w-100 btn btn-outline-dark" id="reset-button">Reset</button>
+                            </div>
+                        </div>
+                        <div id="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block script %}
+<script>
+    var chartData = JSON.parse('{{ chart_data | tojson }}');
+    var colorMap = {
+        Cabai: '#ff6b6b',
+        Tomat: '#fcb45e',
+    };
+
+    var chart = null;
+
+    function createChartData(data) {
+        const seriesData = [];
+        const labels = new Set(); // Menggunakan Set untuk menghindari duplikat tanggal
+
+        for (const kelurahan in data) {
+            for (const komoditas in data[kelurahan]) {
+                const panenData = data[kelurahan][komoditas];
+                const jmlPanen = panenData.jml_panen.map((value) => value / 1000);
+                const tglPanen = panenData.tgl_panen;
+
+                seriesData.push({
+                    name: `${komoditas}`,
+                    data: jmlPanen.map((value, index) => ({
+                        x: new Date(tglPanen[index]).getTime(),
+                        y: value,
+                    })),
+                    color: colorMap[komoditas],
+                });
+
+                tglPanen.forEach((tgl) => labels.add(tgl));
+            }
+        }
+
+        return {
+            seriesData: seriesData,
+            labels: [...labels].sort(), // Mengubah Set menjadi array dan mengurutkan tanggal
+        };
+    }
+
+    function updateChart(data) {
+        if (chart) {
+            chart.destroy();
+        }
+
+        const { seriesData, labels } = createChartData(data);
+
+        chart = new ApexCharts(document.querySelector('#chart'), {
+            series: seriesData,
+            chart: {
+                type: 'bar',
+                height: 345,
+                offsetX: -15,
+                toolbar: { show: true },
+                foreColor: '#adb0bb',
+                fontFamily: 'inherit',
+                sparkline: { enabled: false },
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '95%',
+                    borderRadius: 3,
+                },
+            },
+            legend: { show: true },
+            dataLabels: { enabled: false },
+            xaxis: {
+                type: 'datetime',
+                categories: labels, // Gunakan labels yang telah diurutkan
+                labels: {
+                    style: { cssClass: 'grey--text lighten-2--text fill-color' },
+                },
+            },
+            yaxis: {
+                min: 0,
+                max: 25,
+                tickAmount: 5,
+                labels: {
+                    style: { cssClass: 'grey--text lighten-2--textfill-color' },
+                },
+            },
+            tooltip: {
+                theme: 'dark',
+                x: { format: 'dd MMM yyyy' },
+                y: {
+                    formatter: function (value) {
+                        return `${value} kg`;
+                    },
+                },
+            },
+            responsive: [
+                {
+                    breakpoint: 600,
+                    options: {
+                        plotOptions: { bar: { borderRadius: 3 } },
+                    },
+                },
+            ],
+            events: {
+                clickLegend(chart, seriesIndex, { series }) {
+                    if (chart.getSeries()[seriesIndex]) {
+                        if (chart.getSeries()[seriesIndex].visible) {
+                            chart.toggleSeries(seriesIndex);
+                        } else {
+                            chart.showSeries(seriesIndex);
+                        }
+                    }
+                },
+            },
+        });
+
+        chart.render();
+    }
+
+    function filterDataByDate() {
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+
+        // Ubah format tanggal agar sesuai dengan format data
+        const start = startDate ? new Date(startDate).toISOString().slice(0, 10) : null;
+        const end = endDate ? new Date(endDate).toISOString().slice(0, 10) : null;
+
+        const filteredData = {};
+        for (const kelurahan in chartData) {
+            filteredData[kelurahan] = {};
+            for (const komoditas in chartData[kelurahan]) {
+                const panenData = chartData[kelurahan][komoditas];
+                const filteredPanen = panenData.tgl_panen.reduce(
+                    (acc, date, index) => {
+                        if ((!start || date >= start) && (!end || date <= end)) {
+                            acc.jml_panen.push(panenData.jml_panen[index]);
+                            acc.tgl_panen.push(date);
+                            acc.komoditas.push(panenData.komoditas[index]);
+                        }
+                        return acc;
+                    },
+                    { jml_panen: [], tgl_panen: [], komoditas: [] }
+                );
+                filteredData[kelurahan][komoditas] = filteredPanen;
+            }
+        }
+
+        updateChart(filteredData);
+    }
+
+    function resetData() {
+        document.getElementById('start-date').value = '';
+        document.getElementById('end-date').value = '';
+        updateChart(chartData); // Perbarui chart dengan data asli
+    }
+
+    var filterButton = document.getElementById('filter-button');
+    var resetButton = document.getElementById('reset-button');
+
+    filterButton.addEventListener('click', filterDataByDate);
+    resetButton.addEventListener('click', resetData);
+
+    // Create the initial chart when the page loads
+    window.addEventListener('load', () => {
+        updateChart(chartData);
+    });
+</script>
+{% endblock %} {% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'personal/base.html' %}
+<!-- Content Blocks -->
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <a href="{{ url_for('views.personal' ) }}" class="link-green fw-bold mb-4">&larr; Kembali</a>
+        <div class="col-12">
+            <h1 class="mb-3">{{ article.judul }}</h1>
+            {{ article.content | safe }}
+            <div class="d-flex flex-column">
+                <em>Dibuat pada <span class="fw-bold">{{ article.created_at }}</span></em>
+                <em>Oleh <span class="fw-bold">{{ created_by }}</span></em>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

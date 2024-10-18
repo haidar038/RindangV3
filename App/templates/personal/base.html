@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- ++++++++++++++++++++++++ META TAGS ++++++++++++++++++++++++ -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- OPENGRAPH META TAG -->
+        <meta name="keywords" content="rindang sistem informasi pangan kota ternate kebutuhan cabai barito rica tanam petani" />
+        <meta name="description" content="Rindang adalah platform online yang menghubungkan kebutuhan dan informasi pangan. Tetap terhubung dan temukan informasi terkini serta bergabung untuk menjadi bagian dari kami." />
+        <meta property="og:title" content="RINDANG - Platform Digital Pertanian Terintegrasi" />
+        <meta property="og:description" content="Sistem Informasi kebutuhan pangan dan informasi pangan Kota Ternate" />
+        <meta property="og:image" content="https://i.ibb.co.com/8dynFyq/Rindang-OG-Thumbnail.jpg" />
+        <meta property="og:url" content="https://rindang.net" />
+        <meta property="og:type" content="website" />
+
+        <meta name="google-site-verification" content="CE4GbWjztoabtje-NX5_5eXarrr7Tw7Q3si7eYL1rME" />
+
+        <!-- FAVICONS -->
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}" />
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}" />
+        <link rel="manifest" href="{{ url_for('static', filename='favicons/site.webmanifest') }}" />
+        <link rel="mask-icon" href="{{ url_for('static', filename='favicons/safari-pinned-tab.svg') }}" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#ffc40d" />
+        <meta name="theme-color" content="#ffffff" />
+        <title>{% block title %} {% endblock %}</title>
+
+        <!-- FONTS -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/plus-jakarta-display.min.css" />
+
+        <!-- ++++++++++++++++++++++++ CSS ++++++++++++++++++++++++ -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+
+        <!-- Preload gambar hero untuk loading lebih cepat -->
+        <link rel="preload" as="image" href="../static/img/chillies.png" />
+        <link rel="preload" as="image" href="../static/img/hero.png" />
+
+        <!-- ++++++++++++++++++++++++ CDNs ++++++++++++++++++++++++ -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        {% block head_scripts %} {% endblock %}
+
+        <style>
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+
+            .b-example-divider {
+                width: 100%;
+                height: 3rem;
+                background-color: rgba(0, 0, 0, 0.1);
+                border: solid rgba(0, 0, 0, 0.15);
+                border-width: 1px 0;
+                box-shadow: inset 0 0.5em 1.5em rgba(0, 0, 0, 0.1), inset 0 0.125em 0.5em rgba(0, 0, 0, 0.15);
+            }
+
+            .b-example-vr {
+                flex-shrink: 0;
+                width: 1.5rem;
+                height: 100vh;
+            }
+
+            .bi {
+                vertical-align: -0.125em;
+                fill: currentColor;
+            }
+
+            .nav-scroller {
+                position: relative;
+                z-index: 2;
+                height: 2.75rem;
+                overflow-y: hidden;
+            }
+
+            .nav-scroller .nav {
+                display: flex;
+                flex-wrap: nowrap;
+                padding-bottom: 1rem;
+                margin-top: -1px;
+                overflow-x: auto;
+                text-align: center;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .btn-bd-primary {
+                --bd-violet-bg: #712cf9;
+                --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+                --bs-btn-font-weight: 600;
+                --bs-btn-color: var(--bs-white);
+                --bs-btn-bg: var(--bd-violet-bg);
+                --bs-btn-border-color: var(--bd-violet-bg);
+                --bs-btn-hover-color: var(--bs-white);
+                --bs-btn-hover-bg: #6528e0;
+                --bs-btn-hover-border-color: #6528e0;
+                --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+                --bs-btn-active-color: var(--bs-btn-hover-color);
+                --bs-btn-active-bg: #5a23c8;
+                --bs-btn-active-border-color: #5a23c8;
+            }
+
+            .bd-mode-toggle {
+                z-index: 1500;
+            }
+
+            .bd-mode-toggle .dropdown-menu .active .bi {
+                display: block !important;
+            }
+
+            /* .animate-hero, */
+            /* .animate-headline, */
+            /* .animate-card { */
+            /*     opacity: 0; */
+            /*     visibility: hidden; */
+            /* } */
+
+            .gradient-bg-green {
+                width: 100%;
+                height: 300px;
+                background: rgb(206, 250, 196);
+                background: linear-gradient(180deg, rgba(206, 250, 196, 1) 0%, rgba(255, 255, 255, 1) 100%);
+                position: absolute;
+                z-index: -10;
+            }
+        </style>
+
+        {{ toastr.include_jquery() }} {{ toastr.include_toastr_css() }} {{ toastr.message() }}
+    </head>
+
+    <body class="h-100 position-relative d-lg-flex flex-lg-column d-sm-block">
+        <!-- <div class="gradient-bg-green"></div> -->
+        <!-- ++++++++++++++++++++++++ HEADER ++++++++++++++++++++++++ -->
+        <header>
+            <nav class="navbar navbar-expand-lg top-0 w-100 py-4">
+                <div class="container">
+                    <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='img/rindang-logo.svg' ) }}" alt="" /></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav align-items-lg-center ps-lg-4 ps-0 me-lg-auto mb-lg-0 mb-4 column-gap-lg-3">
+                            <li class="nav-item">
+                                <a id="nav-home" class="nav-link" aria-current="page" href="{{ url_for('views.index' ) }}">Beranda</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="nav-about" class="nav-link" href="{{ url_for('views.index' ) }}#about">Tentang</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="nav-galery" class="nav-link" href="{{ url_for('views.index' ) }}#galery">Galeri</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="nav-contact" class="nav-link" href="{{ url_for('views.index' ) }}#contact">Kontak</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Features </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ url_for('views.rindangpedia' ) }}">Rindang Pedia</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('views.rindangtalk' ) }}">Rindang Talk</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('views.virtual_assistant' ) }}">Rindang AI</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('views.weather' ) }}">Prakiraan Cuaca</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        {% if not current_user.is_authenticated %}
+                        <ul class="navbar-nav ms-lg-auto flex-column flex-lg-row mb-lg-0 column-gap-lg-3">
+                            <li class="nav-item">
+                                <a id="nav" class="nav-link" aria-current="page" href="{{ url_for('auth.login' ) }}">Masuk</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-warning btn-yellow px-4" href="{{ url_for('auth.register' ) }}">Daftar</a>
+                                <!-- <button class="btn btn-warning btn-yellow px-4" data-bs-toggle="modal" data-bs-target="#registerModal">Daftar</button> -->
+                            </li>
+                        </ul>
+                        {% else %} {% if current_user.role == 'admin' %}
+                        <div class="dropdown">
+                            <a class="nav-link gap-2" href="javascript:void(0)" id="drop2" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="me-2 d-none d-lg-inline">{{ current_user.username }}</span>
+                                <img class="img-profile rounded-circle" src="{{ url_for('static', filename='admin/images/profile/user-1.jpg') }}" width="35" height="35" />
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                <div class="message-body">
+                                    <a href="{{ url_for('admin_page.profile', username=current_user.username) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="person"></ion-icon>
+                                        <p class="mb-0">Profil</p>
+                                    </a>
+                                    <a href="{{ url_for('auth.logout') }}" class="d-flex align-items-center gap-2 dropdown-item"><ion-icon name="power"></ion-icon> Keluar</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="dropdown ms-lg-auto">
+                            <a class="nav-link" href="javascript:void(0)" id="drop2" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="me-2 d-none d-lg-inline">{{ current_user.username }}</span>
+                                <img class="img-profile rounded-circle" src="   ../../static/admin/images/profile/user-1.jpg" width="35" height="35" />
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-lg-end dropdown-menu-sm-start dropdown-menu-animate-up" aria-labelledby="drop2">
+                                <div class="message-body">
+                                    <span class="d-flex align-items-center dropdown-item">
+                                        <a href="{{ url_for('views.personal' ) }}" class="btn btn-green text-white">Layanan Personal</a>
+                                    </span>
+                                    <hr />
+                                    <a href="{{ url_for('views.profil' ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="person"></ion-icon>
+                                        <p class="mb-0">Edit Profil</p>
+                                    </a>
+                                    <a href="{{ url_for('views.settings' ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="settings"></ion-icon>
+                                        <p class="mb-0">Pengaturan</p>
+                                    </a>
+                                    <a href="{{ url_for('auth.logout' ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="power"></ion-icon>
+                                        <p class="mb-0">Keluar</p></a
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+                </div>
+            </nav>
+            <!-- END OF NAVBAR -->
+        </header>
+        <!-- ++++++++++++++++++++++++ MAIN ++++++++++++++++++++++++ -->
+        <main class="flex-fill">{% block content %} {% endblock %}</main>
+
+        <!-- Modal -->
+
+        <!-- ++++++++++++++++++++++++ FOOTER ++++++++++++++++++++++++ -->
+        <footer class="bg-green-dark py-3">
+            <div class="row">
+                <small class="col small text-center text-wrap flex-wrap text-light">
+                    Copyright &copy; By <strong>Ternate Creative Space</strong>
+                    <br />
+                    All Rights Reserved 2024
+                </small>
+            </div>
+        </footer>
+
+        <!-- ++++++++++++++++++++++++ SCRIPTS PART ++++++++++++++++++++++++ -->
+        {% block scripts %} {% endblock %} {{ toastr.include_toastr_js() }}
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+        <script>
+            AOS.init();
+        </script>
+        <script>
+            const home = document.getElementById('hero-section');
+            const about = document.getElementById('about');
+            const galery = document.getElementById('galery');
+            const contact = document.getElementById('contact');
+            var mediaQuery = window.matchMedia('(max-width: 767.9px)');
+
+            function mdQuery(x) {
+                if (mediaQuery.matches) {
+                    home.addEventListener('click', function () {
+                        document.getElementById('navbarSupportedContent').classList.remove('show');
+                    });
+
+                    about.addEventListener('click', function () {
+                        document.getElementById('navbarSupportedContent').classList.remove('show');
+                    });
+
+                    galery.addEventListener('click', function () {
+                        document.getElementById('navbarSupportedContent').classList.remove('show');
+                    });
+
+                    contact.addEventListener('click', function () {
+                        document.getElementById('navbarSupportedContent').classList.remove('show');
+                    });
+                }
+            }
+
+            mdQuery(mediaQuery);
+
+            mediaQuery.addEventListener('change', function () {
+                mdQuery(mediaQuery);
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,82 @@
+{% extends 'kelurahan/layout.html' %} {% block main %}
+<div class="container">
+  <div class="row row-gap-4">
+    <a href="{{ url_for('views.index' ) }}" class="link-green text-decoration-none fw-bold">&larr; Kembali ke Beranda</a>
+    <div class="col-12">
+      <h1 class="link-green-dark fw-bold">Kelurahan Sasa</h1>
+      <h4 class="opacity-50">Detail Kelurahan</h4>
+    </div>
+    <div class="col-12">
+      <div id="map" class="rounded rounded-4" style="height: 65vh"></div>
+    </div>
+    <div class="col-12">
+      <p>Kelurahan Sasa Merupakan kelurahan sebuah kawasan di perkotaan yang didominasi oleh ibu rumah tangga dan pekerja, sehingga Petani di kelurahan ini di dominasi oleh ibu rumah tangga</p>
+    </div>
+    <div class="col-12">
+      <table class="w-100">
+        <tr>
+          <th class="w-25">Jumlah Pengurus</th>
+          <td>: 15 Orang</td>
+        </tr>
+        <tr>
+          <th class="w-25">Ketua</th>
+          <td>: Nurjana Andili</td>
+        </tr>
+        <tr>
+          <th class="w-25">Luas Lahan</th>
+          <td>: 100 M<sup>2</sup> | Titik Koordinat : <em class="fw-bold">0°45'19''N 127°19'35''E</em></td>
+        </tr>
+        <tr>
+          <th class="w-25">Pekerjaan</th>
+          <td>: Ibu Rumah Tangga</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  var kebun1 = L.marker([0.755278, 127.326389]).bindPopup("Kebun 1 Sasa");
+
+  var kebun = L.layerGroup([kebun1]);
+
+  var normal = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 16,
+    attribution: "© OpenStreetMap",
+  });
+
+  var ligth_map = L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}", {
+    minZoom: 0,
+    maxZoom: 20,
+    attribution:
+      '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    ext: "png",
+  });
+
+  var dark_map = L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}", {
+    minZoom: 0,
+    maxZoom: 20,
+    attribution:
+      '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    ext: "png",
+  });
+
+  var map = L.map("map", {
+    center: [0.755278, 127.326389],
+    zoom: 16,
+    layers: [normal, kebun],
+  });
+
+  var baseMaps = {
+    Normal: normal,
+    Light: ligth_map,
+    Dark: dark_map,
+  };
+
+  var overlayMaps = {
+    Kebun: kebun,
+  };
+
+  var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+</script>
+{% endblock %}

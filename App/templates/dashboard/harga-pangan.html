@@ -1,0 +1,134 @@
+{% extends 'dashboard/layout.html' %} {% block page_title %} Dashboard - Informasi Harga Pangan {% endblock %} {% block page_header_title %}Harga Pangan{% endblock %} {% block container %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 col-12 d-flex flex-column">
+            <h4><strong>Daftar Harga Eceran Komoditas Per Hari</strong></h4>
+            <p class="mb-4 text-muted"><strong>Ternate, Maluku Utara</strong></p>
+            <div id="loading" style="display: none" class="text-center my-4">
+                <h5>Data sedang dimuat, silakan tunggu...</h5>
+            </div>
+            <div class="table-responsive" style="display: none" id="dataTable">
+                <table class="table table-bordered mb-4" id="priceTable">
+                    <tr class="bg-red text-light">
+                        <th scope="col">Komoditas</th>
+                        <th scope="col" id="date1"></th>
+                        <th scope="col" id="date2"></th>
+                    </tr>
+                    <tr class="bg-light">
+                        <td class="fw-bold">Cabai Rawit Merah</td>
+                        <td id="cabaiRawitMerahPrice1"></td>
+                        <td id="cabaiRawitMerahPrice2"></td>
+                    </tr>
+                    <tr class="bg-light">
+                        <td class="fw-bold">Cabai Merah Keriting</td>
+                        <td id="cabaiMerahKeritingPrice1"></td>
+                        <td id="cabaiMerahKeritingPrice2"></td>
+                    </tr>
+                    <tr class="bg-light">
+                        <td class="fw-bold">Bawang Merah</td>
+                        <td id="bawangMerahPrice1"></td>
+                        <td id="bawangMerahPrice2"></td>
+                    </tr>
+                    <caption class="small text-muted">
+                        Sumber :
+                        <a target="_blank" href="https://panelharga.badanpangan.go.id/harga-eceran" class="text-yellow">
+                            <strong>Badan Pangan Nasional | <em>Panel Harga Pangan</em></strong>
+                        </a>
+                    </caption>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function formatCurrency(priceString) {
+        const priceNumber = parseFloat(priceString.replace(/[^0-9.-]+/g, ''));
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(priceNumber);
+    }
+
+    async function fetchPriceData() {
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+
+        const startDate = yesterday.toISOString().split('T')[0];
+        const endDate = today.toISOString().split('T')[0];
+        const kabKota = 'YOUR_KABKOTA'; // replace with actual kab kota
+        const komoditasId = 'YOUR_KOMODITAS_ID'; // replace with actual komoditas ID
+
+        const url = `/api/price-data?kab_kota=${kabKota}&komoditas_id=${komoditasId}&start_date=${startDate}&end_date=${endDate}`;
+
+        // Show loading indicator
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('dataTable').style.display = 'none';
+
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            populateTable(data.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            // Hide loading indicator and show data table
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('dataTable').style.display = 'block';
+        }
+    }
+
+    function populateTable(data) {
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+
+        document.getElementById('date1').innerText = yesterday.toLocaleDateString('id-ID');
+        document.getElementById('date2').innerText = today.toLocaleDateString('id-ID');
+
+        data.forEach((item) => {
+            item.by_date.forEach((dateData) => {
+                const formattedPrice = formatCurrency(dateData.geomean.toString());
+
+                if (item.name === 'Cabai Rawit Merah') {
+                    if (dateData.date === yesterday.toISOString().split('T')[0]) {
+                        document.getElementById('cabaiRawitMerahPrice1').innerText = formattedPrice;
+                    } else if (dateData.date === today.toISOString().split('T')[0]) {
+                        document.getElementById('cabaiRawitMerahPrice2').innerText = formattedPrice;
+                    }
+                }
+                if (item.name === 'Cabai Merah Keriting') {
+                    if (dateData.date === yesterday.toISOString().split('T')[0]) {
+                        document.getElementById('cabaiMerahKeritingPrice1').innerText = formattedPrice;
+                    } else if (dateData.date === today.toISOString().split('T')[0]) {
+                        document.getElementById('cabaiMerahKeritingPrice2').innerText = formattedPrice;
+                    }
+                }
+                if (item.name === 'Bawang Merah') {
+                    if (dateData.date === yesterday.toISOString().split('T')[0]) {
+                        document.getElementById('bawangMerahPrice1').innerText = formattedPrice;
+                    } else if (dateData.date === today.toISOString().split('T')[0]) {
+                        document.getElementById('bawangMerahPrice2').innerText = formattedPrice;
+                    }
+                }
+            });
+        });
+    }
+
+    window.onload = fetchPriceData;
+</script>
+
+{% endblock %}

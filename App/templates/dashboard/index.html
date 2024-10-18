@@ -1,0 +1,256 @@
+{% extends 'dashboard/layout.html' %} {% block page_title %} Dashboard {% endblock %} {% block head_scripts %}
+<script src="https://unpkg.com/react/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/color-calendar/dist/css/theme-basic.css" />
+<!-- <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" /> -->
+{% endblock %}
+<!-- Header Block -->
+{% block page_header_title %}Dashboard{% endblock %}
+<!-- Block -->
+{% block container %}
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+        <div class="col-lg-12 d-flex">
+            <div class="d-flex flex-column mb-3">
+                <h1 class="text-dark-emphasis">
+                    <strong>Selamat Datang</strong>
+                </h1>
+                <p>Dashboard satu pintu untuk kolaborasi dan pemantauan aktivitas Rindang</p>
+            </div>
+        </div>
+        <h5 class="text-body-secondary mb-3">
+            <strong>Data & Informasi Umum Rindang</strong>
+        </h5>
+        <div class="col-lg-12 mb-3">
+            <div class="row align-items-start">
+                <div class="col-12 col-lg-4">
+                    <a href="{{ url_for('views.hargapangan' ) }}" target="_blank" class="link-dark">
+                        <div class="card card-body border-0 shadow rounded-4 mb-3">
+                            <div class="d-flex gap-3 align-items-center">
+                                <ion-icon class="fa-solid display-4 card-icons-yellow-fill p-3 rounded-3 text-white" name="pricetags"></ion-icon>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <p class="text-yellow fw-bold mb-1">
+                                        <strong>Harga Pangan (Per kilo)</strong>
+                                    </p>
+                                    <h3>
+                                        <strong class="cabai-price">Loading...</strong>
+                                    </h3>
+                                    <p class="mb-0 align-middle text-muted">
+                                        Informasi lebih lanjut
+                                        <i class="ti ti-arrow-right align-middle"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <a href="{{ url_for('views.dataproduksi' ) }}" target="_blank" class="link-dark">
+                        <div class="card card-body border-0 shadow rounded-4 mb-3">
+                            <div class="d-flex gap-3 align-items-center">
+                                <ion-icon class="fa-solid display-4 card-icons-red-fill p-3 rounded-3 text-white" name="leaf"></ion-icon>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <p class="text-red fw-bold mb-1">
+                                        <strong>Jumlah Panen</strong>
+                                    </p>
+                                    <h3>
+                                        <strong>{{ round(total_panen/1000, 2) }} kg</strong>
+                                    </h3>
+                                    <p class="mb-0 text-muted">
+                                        Informasi lebih lanjut
+                                        <i class="ti ti-arrow-right align-middle"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <a href="#" class="link-dark">
+                        <div class="card card-body border-0 shadow rounded-4 mb-3">
+                            <div class="d-flex gap-3 align-items-center">
+                                <ion-icon class="fa-solid display-4 card-icons-green-fill p-3 rounded-3 text-white" name="bar-chart"></ion-icon>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <p class="text-green fw-bold mb-1">
+                                        <strong>Tingkat Produktifitas</strong>
+                                    </p>
+                                    <h3>
+                                        <strong>+2.5% <ion-icon name="trending-up"></ion-icon></strong>
+                                    </h3>
+                                    <p class="mb-0 text-muted">
+                                        Informasi lebih lanjut
+                                        <i class="ti ti-arrow-right align-middle"></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <h5 class="text-body-secondary mb-3">
+            <strong>Statistik & Informasi Produksi</strong>
+        </h5>
+        <div class="col-lg-12 mb-4">
+            <div class="row align-items-start">
+                <div class="col-12 col-lg-6">
+                    <div class="card card-body border-0 shadow rounded-4 mb-3">
+                        <div class="d-flex gap-3 align-items-center">
+                            <ion-icon class="fa-solid display-4 bg-body-tertiary p-3 rounded-3 text-dark" name="notifications"></ion-icon>
+                            <div class="d-flex flex-column justify-content-center w-100">
+                                <p class="text-dark fw-bold mb-1">
+                                    <strong>Pengingat</strong>
+                                </p>
+                                <div class="row d-flex flex-row">
+                                    <div class="col-lg-6 col-sm-12">
+                                        <p class="mb-1">Panen Cabai</p>
+                                        {% if next_harvest_days is not none %}
+                                        <h3>{{ next_harvest_days }} hari lagi</h3>
+                                        {% else %}
+                                        <h3>Tidak ada estimasi panen</h3>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <!-- <p class="mb-0 text-muted">
+                                    Informasi lebih lanjut
+                                    <i class="ti ti-arrow-right align-middle"></i>
+                                </p> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-body border-0 shadow rounded-4">
+                        <div class="row">
+                            <div class="col-lg-8 col-sm-12">
+                                <div id="color-calendar"></div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <p class=""><strong>Keterangan</strong></p>
+                                <ul style="list-style: square" id="events-list"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="card card-body border-0 shadow rounded-4 mb-3" id="current-weather-data"></div>
+                    <div class="card card-body border-0 shadow rounded-4 mb-3">
+                        <div id="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/color-calendar/dist/bundle.js"></script>
+<script>
+    const harvestData = JSON.parse(`{{ harvest_data | safe }}`);
+
+    // Create events from harvestData
+    const myEventsData = harvestData.map((item) => {
+        return {
+            start: item.date,
+            end: item.date,
+            name: `Estimasi Panen (${item.days_remaining} hari lagi)`,
+        };
+    });
+
+    let myCal = new Calendar({
+        id: '#color-calendar',
+        calendarSize: 'small',
+        headerColor: '#89c97b',
+        customWeekdayValues: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+        dateChanged: (currentDate, events) => {
+            console.log('Date changed', currentDate, events);
+        },
+        monthChanged: (currentDate, events) => {
+            console.log('Month changed', currentDate, events);
+        },
+    });
+
+    // Set the events to the calendar
+    myCal.setEventsData(myEventsData);
+
+    console.log(myEventsData); // Check if events are correct
+
+    // Display events in a list
+    let eventsList = document.getElementById('events-list');
+    myEventsData.forEach((event) => {
+        let listItem = document.createElement('li');
+        listItem.textContent = `${event.start}: ${event.name}`;
+        eventsList.appendChild(listItem);
+    });
+</script>
+
+<!-- WEATHER SCRIPTS -->
+<script src="{{ url_for('static', filename='js/weather.js' ) }}"></script>
+<script>
+    function displayCurrentWeather(data) {
+        const weatherDescription = WEATHER_DESCRIPTIONS[data.weather[0]] || 'Tidak diketahui';
+        console.log(data);
+        const html = `
+        <div class="d-flex gap-3 align-items-center">
+            <ion-icon class="fa-solid display-4 bg-body-tertiary p-3 rounded-3 text-dark" name="${weatherDescription[1]}"></ion-icon>
+            <div class="d-flex flex-column justify-content-center">
+                <p class="text-dark fw-bold mb-1">
+                    <strong>Cuaca Hari Ini</strong>
+                </p>
+                <h3>
+                    <strong>${data.temperature[0]}°C (${weatherDescription[0]})</strong>
+                </h3>
+                <a target='_blank' href='{{ url_for('views.weather' ) }}' class="text-muted">
+                    Informasi lebih lanjut
+                    <i class="ti ti-arrow-right align-middle"></i>
+                </a>
+            </div>
+        </div>
+        `;
+        document.getElementById('current-weather-data').innerHTML = html;
+    }
+
+    async function initWeatherApp() {
+        const weatherData = await fetchWeatherData();
+        if (weatherData) {
+            displayCurrentWeather(weatherData);
+        }
+    }
+
+    initWeatherApp();
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/price-data')
+            .then((response) => response.json())
+            .then((data) => {
+                const priceElement = document.querySelector('.cabai-price');
+                const filteredData = data.filter((item) => item.name === 'Cabai Rawit Merah');
+                if (filteredData.length > 0) {
+                    priceElement.textContent = filteredData[filteredData.length - 1].price + '/kg';
+                }
+            })
+            .catch((error) => console.error('Error fetching price data:', error));
+    });
+</script>
+<script>
+    var chartOptions = {
+        chart: {
+            type: 'line',
+        },
+        series: [
+            {
+                name: 'sales',
+                data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
+            },
+        ],
+        xaxis: {
+            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+        },
+    };
+
+    var chart = new ApexCharts(document.querySelector('#chart'), chartOptions);
+
+    chart.render();
+</script>
+{% endblock %}

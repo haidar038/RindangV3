@@ -1,0 +1,316 @@
+{% extends 'admin-dashboard/layout.html' %} {% block title %} Data Produksi RINDANG {% endblock %} {% block head %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"
+    integrity="sha512-ZwR1/gSZM3ai6vCdI+LVF1zSq/5HznD3ZSTk7kajkaj4D292NLuduDCO1c/NT8Id+jE58KYLKT7hXnbtryGmMg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"
+    integrity="sha512-UXumZrZNiOwnTcZSHLOfcTs0aos2MzBWHXOHOuB0J/R44QB0dwY5JgfbvljXcklVf65Gc4El6RjZ+lnwd2az2g=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+></script>
+{% endblock %} {% block container %}
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row align-items-start">
+                <div class="col-12">
+                    <div class="card card-body">
+                        <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
+                            <div class="mb-3 mb-sm-0">
+                                <h5 class="card-title text-dark-emphasis">
+                                    <strong>Informasi Statistik Produksi</strong>
+                                </h5>
+                            </div>
+                            <div class="filter-data d-flex gap-2">
+                                <div>
+                                    <select class="form-select" id="select-kelurahan">
+                                        <option value="">Semua Kelurahan</option>
+                                        {% for kelurahan in kel %}
+                                        <option value="{{ kelurahan.nama }}">{{ kelurahan.nama }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="date-filter mb-3 row-gap-3 row">
+                            <div class="col d-flex flex-column">
+                                <label for="start-date">Start Date:</label>
+                                <input class="form-control" type="date" id="start-date" name="start-date" />
+                            </div>
+                            <div class="col d-flex flex-column">
+                                <label for="end-date">End Date:</label>
+                                <input class="form-control" type="date" id="end-date" name="end-date" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <button class="w-100 btn btn-green" id="filter-button">Filter</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="w-100 btn btn-outline-dark" id="reset-button">Reset</button>
+                            </div>
+                        </div>
+                        <div class="row pt-4">
+                            <div class="col-12 col-lg-6">
+                                <div class="mb-3">
+                                    <p class="h3 fw-bold">Cabai</p>
+                                </div>
+                                <div class="mt-4" id="chart-cabai" role="img" aria-label="Production Statistics Chart Cabai"></div>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-3">
+                                <div class="mb-3">
+                                    <p class="h3 fw-bold">Tomat</p>
+                                </div>
+                                <div class="mt-4" id="chart-tomat" role="img" aria-label="Production Statistics Chart Tomat"></div>
+                            </div>
+                            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                                <div class="sasa d-flex justify-content-center align-items-center gap-2">
+                                    <span class="color-sasa p-2"></span>
+                                    <span>Sasa</span>
+                                </div>
+                                <div class="tubo d-flex justify-content-center align-items-center gap-2">
+                                    <span class="color-tubo p-2"></span>
+                                    <span>Tubo</span>
+                                </div>
+                                <div class="fora d-flex justify-content-center align-items-center gap-2">
+                                    <span class="color-fora p-2"></span>
+                                    <span>Foramadiahi</span>
+                                </div>
+                                <div class="kalumpang d-flex justify-content-center align-items-center gap-2">
+                                    <span class="color-kalumpang p-2"></span>
+                                    <span>Kalumpang</span>
+                                </div>
+                                <div class="kulaba d-flex justify-content-center align-items-center gap-2">
+                                    <span class="color-kulaba p-2"></span>
+                                    <span>Kulaba</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+    let chartData = JSON.parse('{{ chart_data | tojson }}');
+
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const filterButton = document.getElementById('filter-button');
+    const resetButton = document.getElementById('reset-button');
+    const kelurahanSelect = document.getElementById('select-kelurahan');
+    const chartCabaiElement = document.querySelector('#chart-cabai');
+    const chartTomatElement = document.querySelector('#chart-tomat');
+
+    let chartCabai = null;
+    let chartTomat = null;
+
+    const colorMap = {
+        Foramadiahi: '#ef476f',
+        Sasa: '#ffd166',
+        Tubo: '#06d6a0',
+        Kulaba: '#118ab2',
+        Kalumpang: '#540b0e',
+    };
+
+    function filterData() {
+        const selectedKelurahan = kelurahanSelect.value;
+
+        const filteredCabaiData = [];
+        const filteredTomatData = [];
+
+        for (const [kelurahan, dataKelurahan] of Object.entries(chartData)) {
+            if (selectedKelurahan === '' || kelurahan === selectedKelurahan) {
+                for (const [komoditas, dataKomoditas] of Object.entries(dataKelurahan)) {
+                    dataKomoditas.tgl_panen.forEach((tanggal, index) => {
+                        const dataPoint = {
+                            kelurahan,
+                            komoditas,
+                            jml_panen: dataKomoditas.jml_panen[index] / 1000,
+                            tanggal_panen: tanggal,
+                            color: colorMap[kelurahan],
+                        };
+                        if (komoditas === 'Cabai') {
+                            filteredCabaiData.push(dataPoint);
+                        } else if (komoditas === 'Tomat') {
+                            filteredTomatData.push(dataPoint);
+                        }
+                    });
+                }
+            }
+        }
+
+        updateChart(filteredCabaiData, chartCabaiElement, 'Cabai');
+        updateChart(filteredTomatData, chartTomatElement, 'Tomat');
+    }
+
+    function updateChart(data, chartElement, komoditas) {
+        if (komoditas === 'Cabai' && chartCabai) {
+            chartCabai.destroy();
+        } else if (komoditas === 'Tomat' && chartTomat) {
+            chartTomat.destroy();
+        }
+
+        const dataByTanggal = data.reduce((acc, item) => {
+            const tanggal = item.tanggal_panen;
+            if (!acc[tanggal]) {
+                acc[tanggal] = {};
+            }
+            const key = `${item.kelurahan}`;
+            if (!acc[tanggal][key]) {
+                acc[tanggal][key] = {
+                    name: key,
+                    data: [],
+                    color: item.color,
+                };
+            }
+            acc[tanggal][key].data.push({ x: new Date(tanggal).getTime(), y: item.jml_panen });
+            return acc;
+        }, {});
+
+        const labels = Object.keys(dataByTanggal);
+        const seriesData = Object.values(dataByTanggal)
+            .map((dataPerTanggal) => Object.values(dataPerTanggal))
+            .flat();
+
+        const chartOptions = {
+            series: seriesData,
+            chart: {
+                type: 'bar',
+                height: 345,
+                toolbar: {
+                    show: true,
+                },
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '100%',
+                    borderRadius: 3,
+                },
+            },
+            legend: {
+                show: false,
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            xaxis: {
+                type: 'datetime',
+                categories: labels,
+                labels: {
+                    style: {
+                        cssClass: 'grey--text lighten-2--text fill-color',
+                    },
+                },
+            },
+            yaxis: {
+                min: 0,
+                max: 50,
+                tickAmount: 5,
+                labels: {
+                    style: {
+                        cssClass: 'grey--text lighten-2--text fill-color',
+                    },
+                },
+            },
+            tooltip: {
+                theme: 'dark',
+                x: {
+                    format: 'dd MMM yyyy',
+                },
+                y: {
+                    formatter: function (value) {
+                        return `${value} kg`;
+                    },
+                },
+            },
+            responsive: [
+                {
+                    breakpoint: 600,
+                    options: {
+                        plotOptions: {
+                            bar: {
+                                borderRadius: 3,
+                            },
+                        },
+                    },
+                },
+            ],
+        };
+
+        if (komoditas === 'Cabai') {
+            chartCabai = new ApexCharts(chartElement, chartOptions);
+            chartCabai.render();
+        } else if (komoditas === 'Tomat') {
+            chartTomat = new ApexCharts(chartElement, chartOptions);
+            chartTomat.render();
+        }
+    }
+
+    // Data asli untuk reset
+    const originalChartData = JSON.parse(JSON.stringify(chartData));
+
+    function filterDataByDate() {
+        const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+        const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+        const filteredCabaiData = [];
+        const filteredTomatData = [];
+
+        for (const [kelurahan, dataKelurahan] of Object.entries(chartData)) {
+            for (const [komoditas, dataKomoditas] of Object.entries(dataKelurahan)) {
+                dataKomoditas.tgl_panen.forEach((tanggal, index) => {
+                    const tanggalPanen = new Date(tanggal);
+                    const dataPoint = {
+                        kelurahan,
+                        komoditas,
+                        jml_panen: dataKomoditas.jml_panen[index] / 1000,
+                        tanggal_panen: tanggal,
+                        color: colorMap[kelurahan],
+                    };
+                    if ((!startDate || tanggalPanen >= startDate) && (!endDate || tanggalPanen <= endDate)) {
+                        if (komoditas === 'Cabai') {
+                            filteredCabaiData.push(dataPoint);
+                        } else if (komoditas === 'Tomat') {
+                            filteredTomatData.push(dataPoint);
+                        }
+                    }
+                });
+            }
+        }
+
+        updateChart(filteredCabaiData, chartCabaiElement, 'Cabai');
+        updateChart(filteredTomatData, chartTomatElement, 'Tomat');
+    }
+
+    function resetData() {
+        // Kembalikan data ke data asli
+        chartData = JSON.parse(JSON.stringify(originalChartData));
+
+        // Reset input tanggal
+        startDateInput.value = '';
+        endDateInput.value = '';
+
+        // Update chart dengan data asli
+        filterData(); // Panggil filterData() untuk memperbarui chart tanpa filter
+    }
+
+    filterButton.addEventListener('click', filterDataByDate);
+    resetButton.addEventListener('click', resetData);
+
+    kelurahanSelect.addEventListener('change', filterData);
+
+    filterData();
+</script>
+{% endblock %}

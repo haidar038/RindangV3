@@ -1,0 +1,44 @@
+{% extends 'personal/base.html' %}
+<!-- BLOCKS -->
+{% block content %}
+<div class="container py-4">
+    <form action="" method="post">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <a href="{{ url_for('views.personal' ) }}" class="nav-link text-green fw-bold">&larr; Kembali</a>
+            <div class="d-flex gap-2">
+                <button type="submit" id="draftBtn" class="btn btn-outline-green fw-bold">Simpan Draft</button>
+                <button type="submit" id="postBtn" class="btn btn-green fw-bold text-white">Posting</button>
+            </div>
+        </div>
+        <h1 class="h5 fw-bold mb-5">Update Artikel</h1>
+        <div class="row mb-5">
+            <div class="col-12">
+                <input type="hidden" name="action" id="action" />
+                <div class="mb-3">
+                    <label for="judul" class="form-label fw-bold">Judul Artikel</label>
+                    <input type="text" class="form-control" id="judul" name="judul" placeholder="Buat judul artikel yang menarik" value="{{ article.judul }}" required />
+                </div>
+                <div class="mb-3">
+                    <label for="ckeditor" class="form-label fw-bold">Tulisan</label>
+                    {{ ckeditor.create(value=article.content) }}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+<!-- JS Block -->
+{% block scripts %} {{ ckeditor.load() }}
+<script src="//cdn.ckeditor.com/4.24.0-lts/full/ckeditor.js"></script>
+<script>
+    const draftBtn = document.getElementById('draftBtn');
+    const postBtn = document.getElementById('postBtn');
+    let action = document.getElementById('action');
+    draftBtn.addEventListener('click', function () {
+        action.value = 'save';
+    });
+    postBtn.addEventListener('click', function () {
+        action.value = 'posting';
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Laporan</title>
+
+        <link rel="stylesheet" href="../../static/style.css" />
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <style>
+            @import url('https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/plus-jakarta-display.min.css');
+
+            * {
+                font-family: 'Plus Jakarta Display', sans-serif;
+            }
+
+            html {
+                height: 100%;
+            }
+
+            body {
+                height: 100%;
+            }
+
+            #report {
+                height: 297mm;
+                width: 210mm;
+                padding: 0.5in;
+            }
+        </style>
+    </head>
+
+    <body class="p-3 bg-secondary">
+        <a role="button" href="javascript:void(0)" class="btn btn-dark position-absolute top-0 start-0 mt-2 ms-2 btn-download">Export</a>
+        <div class="d-flex flex-column align-items-center">
+            <div class="report bg-light position-relative" id="report">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <img src="{{ url_for('static', filename='logo/rindang-logo-green.svg' ) }}" alt="" />
+                    <div class="small text-muted">{{today}}</div>
+                </div>
+                <div class="h4 text-center mb-4">Report Rindang</div>
+                <div><strong>Kelurahan</strong> : {{ kel.nama }}</div>
+                <div><strong>Jumlah Kebun</strong> : {{ kel.kebun }} Kebun</div>
+                <table class="table mt-4 mb-4">
+                    <thead class="table-success">
+                        <tr class="text-center">
+                            <th scope="col">No.</th>
+                            <th scope="col">Kebun</th>
+                            <th scope="col">Komoditas</th>
+                            <th scope="col">Tanggal</th>
+                            <th scope="col">Jumlah Panen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for komoditas in kmd %}
+                        <tr class="text-center">
+                            <td data-index="{{ loop.index }}">{{ loop.index }}</td>
+                            <td>Kebun {{ komoditas.kebun }}</td>
+                            <td>{{ komoditas.komoditas }}</td>
+                            <td>{{ komoditas.tanggal_panen }}</td>
+                            <td>{{ round_numb(komoditas.jml_panen/1000, 1) }} kg</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="frame"></div>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+            integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
+
+        <!-- <script>
+            window.open('data:application/pdf;base64,' + '{{ pdf_base64 }}');
+        </script> -->
+
+        <!-- <script>
+            let filename = '{{kel.nama}}';
+
+            jQuery(document).ready(function () {
+                function generatePDFfromDiv(divId) {
+                    const element = document.getElementById(divId);
+
+                    html2canvas(element, {
+                        // Opsi untuk html2canvas (jika diperlukan)
+                    }).then((canvas) => {
+                        const imgData = canvas.toDataURL('image/png');
+                        const doc = new jsPDF();
+                        const imgProps = doc.getImageProperties(imgData);
+                        const pdfWidth = doc.internal.pageSize.getWidth();
+                        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                        doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                        doc.save('download.pdf');
+                    });
+                }
+
+                $('.btn-download').click(function () {
+                    html2canvas(document.querySelector('#report'), {
+                        scale: 2, // Meningkatkan skala untuk resolusi yang lebih tinggi
+                        dpi: 300, // Meningkatkan DPI untuk gambar yang lebih tajam
+                        letterRendering: true, // Meningkatkan rendering teks
+                    }).then((canvas) => {
+                        let base64image = canvas.toDataURL('image/jpeg'); // Menggunakan format JPEG
+                        let pdf = new jsPDF({
+                            compress: true, // Aktifkan kompresi PDF
+                            compression: 9, // Tingkat kompresi maksimum
+                            unit: 'mm', // Unit pengukuran dalam milimeter
+                            format: 'a4', // Ukuran halaman A4
+                        });
+                        pdf.addImage(base64image, 'JPEG', 0, 0, 210, 297); // Menyesuaikan dimensi gambar dengan ukuran halaman
+                        pdf.save('Report of ' + filename + '.pdf');
+                    });
+                });
+
+                // Event listener untuk tombol
+                $('.btn-two').click(function () {
+                    generatePDFfromDiv('report'); // Ganti 'content' dengan ID div Anda
+                });
+            });
+        </script> -->
+    </body>
+</html>

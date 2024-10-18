@@ -1,0 +1,1135 @@
+{% extends 'dashboard/layout.html' %} {% block page_title %} Dashboard - Data Pangan {% endblock %} {% block container %}
+<div class="container-fluid">
+    <!--  Row 1 -->
+    <div class="row">
+        {% if not user_data %}
+        <div class="col-lg-12 align-items-stretch">
+            <div class="alert alert-danger" role="alert">Mohon lengkapi data terlebih dahulu untuk membuka form input data produksi. <a href="{{ url_for('views.profil' ) }}" class="btn btn-outline-danger ms-2">Lengkapi Profil!</a></div>
+        </div>
+        {% endif %}
+        <div class="col-lg-6 col-12 d-flex align-items-strech">
+            <!-- Chart -->
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
+                        <div class="mb-3 mb-sm-0">
+                            <h5 class="card-title text-dark-emphasis">
+                                <strong>Statistik Panen Rindang</strong>
+                            </h5>
+                        </div>
+                        <div>
+                            <select class="form-select" id="select-pangan">
+                                <option value="chart">Cabai</option>
+                                <option value="chart2">Tomat</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="date-filter mb-3 row-gap-3 row">
+                        <div class="col d-flex flex-column">
+                            <label for="start-date">Start Date:</label>
+                            <input class="form-control" type="date" id="start-date" name="start-date" />
+                        </div>
+                        <div class="col d-flex flex-column">
+                            <label for="end-date">End Date:</label>
+                            <input class="form-control" type="date" id="end-date" name="end-date" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <button class="w-100 btn btn-green" id="filter-button">Filter</button>
+                        </div>
+                        <div class="col-6">
+                            <button class="w-100 btn btn-outline-dark" id="reset-button">Reset</button>
+                        </div>
+                    </div>
+                    <div id="chart"></div>
+                    <div id="chart2" style="display: none"></div>
+                </div>
+            </div>
+            <!-- Chart End -->
+        </div>
+        <div class="col-lg-6 col-12">
+            <div class="card overflow-hidden">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h5 class="card-title text-dark-emphasis">
+                            <strong>Akumulasi Hasil Produksi</strong>
+                        </h5>
+
+                        <em class="text-muted">Informasi Bulan Ini</em>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            {% if pangan %} {% set jml_panen = total_panen/1000 %}
+                            <p class="mb-3 display-5">
+                                <strong>{{ jml_panen | default("0") }} kg</strong>
+                            </p>
+                            {% else %}
+                            <p class="mb-3 display-6"><strong>0 kg</strong></p>
+                            {% endif %}
+                            <!-- <div class="d-flex align-items-center">
+                            <div class="me-4">
+                            <span class="round-8 rounded-circle me-2 d-inline-block" style="background-color: #ff6b6b"></span>
+                            <span class="fs-2">Cabai</span>
+                            </div>
+                            <div>
+                            <span class="round-8 rounded-circle me-2 d-inline-block" style="background-color: #fcb45e"></span>
+                            <span class="fs-2">Tomat</span>
+                            </div>
+                        </div> -->
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="mb-0"><span class="round-8 rounded-circle me-2 d-inline-block" style="background-color: #ff6b6b"></span> Cabai</p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <span class="me-1 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
+                                            {% if kenaikan_cabai > 0 %}
+                                            <i class="ti ti-trending-up text-success"></i>
+                                            {% elif kenaikan_cabai < 0 %} <i class="ti ti-trending-down text-danger"> </i>
+                                            {% endif %}
+                                        </span>
+                                        <p class="text-dark me-1 fs-3 mb-0 text-wrap">
+                                            {% if kenaikan_cabai > 0 %} <span class="text-green-dark">+ {{ kenaikan_cabai }}% dibandingkan panen sebelumnya</span> {% elif kenaikan_cabai < 0 %}
+                                            <span class="fw-bold text-red">{{ kenaikan_cabai }}% dibandingkan panen sebelumnya</span> {% elif kenaikan_cabai== 0 %} <em class="text-muted"><strong>belum ada data perbandingan</strong></em> {%
+                                            endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <p class="mb-0"><span class="round-8 rounded-circle me-2 d-inline-block" style="background-color: #fcb45e"></span> Tomat</p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <span class="me-1 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
+                                            {% if kenaikan_tomat > 0 %}
+                                            <i class="ti ti-trending-up text-success"></i>
+                                            {% elif kenaikan_tomat < 0 %} <i class="ti ti-trending-down text-danger"> </i>
+                                            {% endif %}
+                                        </span>
+                                        <p class="text-dark me-1 fs-3 mb-0 text-wrap">
+                                            {% if kenaikan_tomat > 0 %} <span class="text-green-dark">+ {{ kenaikan_tomat }}% dibandingkan panen sebelumnya</span> {% elif kenaikan_tomat < 0 %}
+                                            <span class="text-red"> {{ kenaikan_tomat }}% dibandingkan panen sebelumnya</span> {% elif kenaikan_tomat== 0 %} <em class="text-muted"><strong>belum ada data perbandingan</strong></em> {% endif
+                                            %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-center">
+                                <div id="breakup"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Modal Input Data Baru -->
+        <div class="modal fade" id="inputData" tabindex="-1" aria-labelledby="inputDataLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content p-3">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 fw-bold" id="inputDataLabel">Input Data Produksi</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" method="post">
+                            <div class="mb-3">
+                                <label for="kebun" class="form-label fw-bold fs-4">Kebun</label>
+                                <select class="form-select" aria-label="kebun" id="kebun" name="kebun" {% if not kebun %} disabled {% endif %}>
+                                    {% if kebun %} {% for data_kel in kebun %}
+                                    <option value="{{data_kel.nama}}">Kebun {{data_kel.nama}}</option>
+                                    {% endfor %} {% endif %} {% if not kebun %}
+                                    <option value="">Belum ada kebun</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="komoditas" class="form-label fw-bold fs-4">Komoditas</label>
+                                <select class="form-select" aria-label="Komoditas" id="komoditas" name="komoditas">
+                                    <option value="Cabai">Cabai</option>
+                                    <option value="Tomat">Tomat</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="tglBibit" class="form-label fw-bold fs-4">Tanggal Penanaman</label>
+                                        <input type="date" class="form-control" id="tglBibit" name="tglBibit" required />
+                                    </div>
+                                    <div class="col">
+                                        <label for="jumlahBibit" class="form-label fw-bold fs-4">Jumlah Bibit</label>
+                                        <input type="number" class="form-control" id="jumlahBibit" name="jumlahBibit" placeholder="contoh: 1000" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-green w-100">Input Data</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Update Data Produksi -->
+        {% for dataPangan in pangan %}
+        <div class="modal fade" id="updateData{{dataPangan.id}}" tabindex="-1" aria-labelledby="updateDataLabel{{dataPangan.id}}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content p-3">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 fw-bold" id="inputDataLabel">
+                            Update Data Produksi &nbsp; <span class="badge {% if dataPangan.status == 'Penanaman' %} bg-warning {% else %} bg-green {% endif %}">{{ dataPangan.status }}</span>
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-4">
+                            <div class="col">
+                                <button class="btn btn-success" data-bs-target="#panenModal{{dataPangan.id}}" data-bs-toggle="modal">{% if dataPangan.status == 'Panen' %} Lihat/Update Data Panen {% else %} Panen {% endif %}</button>
+                            </div>
+                        </div>
+                        <form action="{{ url_for('views.updatepangan', id=dataPangan.id ) }}" method="post">
+                            <input type="text" class="visually-hidden" value="updateProduksi" name="updateProduksi" />
+                            <div class="mb-3">
+                                <label for="updateKebun" class="form-label fw-bold fs-4">Kebun</label>
+                                <select class="form-select" aria-label="updateKebun" id="updateKebun" name="updateKebun">
+                                    <option value="{{dataPangan.kebun}}">{{dataPangan.kebun}}</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateKomoditas" class="form-label fw-bold fs-4">Komoditas</label>
+                                <select class="form-select" aria-label="Komoditas" id="updateKomoditas" name="updateKomoditas">
+                                    <option value="{{dataPangan.komoditas}}">{{dataPangan.komoditas}}</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="updateTglBibit" class="form-label fw-bold fs-4">Tanggal Penanaman</label>
+                                        <input type="date" class="form-control" id="updateTglBibit" name="updateTglBibit" value="{{dataPangan.tanggal_bibit}}" required />
+                                    </div>
+                                    <div class="col">
+                                        <label for="updateJumlahBibit" class="form-label fw-bold fs-4">Jumlah Bibit</label>
+                                        <input type="number" class="form-control" id="updateJumlahBibit" name="updateJumlahBibit" value="{{dataPangan.jml_bibit}}" placeholder="contoh: 1000" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-green w-100">Update Data Produksi</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- UPDATE MODAL PANEN -->
+        {% for dataPangan in pangan %}
+        <div class="modal fade" id="panenModal{{dataPangan.id}}" aria-hidden="true" aria-labelledby="panenModal{{dataPangan.id}}Label" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="panenModal{{dataPangan.id}}Label">Panen</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-2">
+                            <form action="{{ url_for('views.updatepangan', id=dataPangan.id ) }}" method="post">
+                                <input type="text" class="visually-hidden" value="dataPanen" name="updateProduksi" />
+                                <div class="col mb-3">
+                                    <label for="updateTglPanen" class="form-label fw-bold fs-4">Tanggal Panen</label>
+                                    <input type="date" class="form-control panen" id="updateTglPanen" {% if dataPangan.status=='Panen' %} value="{{dataPangan.tanggal_panen}}" {% endif %} name="updateTglPanen" required />
+                                </div>
+                                <div class="col mb-4">
+                                    <label for="updateJumlahPanen" class="form-label fw-bold fs-4">Hasil Panen (g)</label>
+                                    <input type="number" class="form-control panen" id="updateJumlahPanen" name="updateJumlahPanen" {% if dataPangan.status=='Panen' %} value="{{dataPangan.jml_panen}}" {% endif %} placeholder="contoh: 1000"
+                                    required />
+                                </div>
+                                <button class="btn btn-green" type="submit">Submit Hasil Panen</button>
+                            </form>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-outline-dark" data-bs-target="#updateData{{dataPangan.id}}" data-bs-toggle="modal">Kembali</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- DELETE 1 DATA MODAL -->
+        {% for dataPangan in pangan %}
+        <div class="modal fade" id="deleteData{{dataPangan.id}}" aria-hidden="true" aria-labelledby="deleteData{{dataPangan.id}}Label" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="deleteData{{dataPangan.id}}Label">Hapus Data Produksi</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Apakah anda yakin akan menghapus item ini?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                        <!-- <button type="button" class="btn btn-red">Ya, hapus!</button> -->
+                        <a class="btn btn-danger" href="{{ url_for('views.delete_data_pangan', id=dataPangan.id ) }}"><i class="ti ti-trash me-2"></i> Ya, hapus!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="col-lg-12 d-flex align-items-stretch {% if not user_data %} d-none {% endif %}">
+            <div class="card w-100">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title fw-semibold">Laporan Hasil Penanaman - Panen</h5>
+                        <div class="dropdown">
+                            <button class="btn btn-light btn-lg" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti ti-dots-vertical"></i></button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" id="inputDataBtn" data-bs-toggle="modal" data-bs-target="#inputData">Input Data Produksi</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('views.import_data_pangan' ) }}">Impor Data Produksi</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link text-green active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Cabai</button>
+                            <button class="nav-link text-green" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Tomat</button>
+                        </div>
+                    </nav>
+
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                            <div class="table-responsive">
+                                <form action="#" method="post">
+                                    <!-- DELETE 1 DATA MODAL -->
+                                    <div class="modal fade" id="deleteSelectedData" aria-hidden="true" aria-labelledby="deleteSelectedDataLabel" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="deleteSelectedDataLabel">Hapus Data Terpilih</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Apakah anda yakin akan menghapus item yang dipilih?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                                    <button id="deleteSelectedBtn" type="button" class="btn btn-red text-white confirm-delete"><i class="ti ti-trash me-2"></i> Ya, hapus!</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table class="table text-nowrap mb-0 align-middle">
+                                        <thead class="text-dark fs-4">
+                                            <tr>
+                                                <th class="align-middle text-center max-width">
+                                                    <h6 class="fw-semibold mb-0">No</h6>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <a href="#" class="fw-semibold mb-0 h6" data-sort-by="kebun">Kebun <i class="ti ti-arrows-down-up"></i></a>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <a href="#" class="fw-semibold mb-0 h6" data-sort-by="bibit">Jumlah Bibit <i class="ti ti-arrows-down-up"></i></a>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <a href="#" class="fw-semibold mb-0 h6" data-sort-by="tanam">Tanggal Penanaman <i class="ti ti-arrows-down-up"></i></a>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <a href="#" class="fw-semibold mb-0 h6" data-sort-by="status">Status <i class="ti ti-arrows-down-up"></i></a>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <a href="#" class="fw-semibold mb-0 h6" data-sort-by="hasil">Hasil Panen <i class="ti ti-arrows-down-up"></i></a>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <h6 class="fw-semibold mb-0">Menu</h6>
+                                                </th>
+                                                <th class="justify-content-center align-items-center d-flex flex-column gap-2">
+                                                    <button type="button" class="btn btn-sm btn-danger btn-delete-selected" data-bs-toggle="modal" data-bs-target="#deleteSelectedData" disabled>Hapus Pilihan</button>
+                                                    <div class="form-check align-middle mb-0">
+                                                        <input class="form-check-input" type="checkbox" value="" id="selectDelAllCabai" />
+                                                        <label class="form-check-label small" for="selectDelAllCabai"> Pilih Semua </label>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for data_cabai in cabai.items %}
+                                            <tr>
+                                                <td class="border-bottom-0">
+                                                    <h6 class="fw-semibold mb-0">{{ loop.index }}</h6>
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <h6 class="fw-semibold mb-1">{{ data_cabai.kebun }}</h6>
+                                                    <!-- <span class="fw-normal">Skala Besar</span> -->
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <p class="mb-0 fw-normal">{{ data_cabai.jml_bibit }}</p>
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <p class="mb-0 fw-normal" id="tglTanamCabai">{{ data_cabai.tanggal_bibit}}</p>
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <div class="d-flex align-items-center justify-content-center gap-2">
+                                                        <span class="badge {% if data_cabai.status == 'Panen' %} bg-green {% else %} bg-yellow {% endif %} rounded-3 fw-semibold">{{ data_cabai.status }}</span>
+                                                    </div>
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <div class="fw-bold d-flex justify-content-center">
+                                                        <strong>{{ data_cabai.jml_panen/1000 }}</strong>
+                                                    </div>
+                                                    <div class="d-flex flex-column align-items-center justify-content-center">
+                                                        <div class="small text-green" id="estimasiPanenCabai">
+                                                            <em><strong>{{ data_cabai.estimasi_panen | default("2022-10-01") }}</strong></em>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="border-bottom-0 align-middle">
+                                                    <!-- <a class="btn btn-danger fs-6" href="{{ url_for('views.delete_data_pangan', id=data_cabai.id ) }}"><i class="ti ti-trash"></i></a> -->
+                                                    <button id="deleteDataBtn" type="button" class="btn btn-red text-white fs-6" data-bs-toggle="modal" data-bs-target="#deleteData{{data_cabai.id}}"><i class="ti ti-trash"></i></button>
+                                                    <button id="updateDataBtn" type="button" class="btn btn-green fs-6" data-bs-toggle="modal" data-bs-target="#updateData{{data_cabai.id}}"><i class="ti ti-edit"></i></button>
+                                                </td>
+                                                <td class="border-bottom-0 align-middle text-center">
+                                                    <div class="form-check d-flex justify-content-center">
+                                                        <input class="form-check-input delete_ids" type="checkbox" name="delete_ids" value="{{ data_cabai.id }}" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <nav aria-label="Page navigation for table" class="mt-4">
+                                        <ul class="pagination justify-content-center">
+                                            <ul class="pagination justify-content-center">
+                                                {% if cabai.has_prev %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('views.dataproduksi', page=cabai.prev_num) }}" aria-label="Previous">
+                                                        <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                                                    </a>
+                                                </li>
+                                                {% else %}
+                                                <li class="page-item disabled">
+                                                    <a class="page-link" href="#" aria-label="Previous">
+                                                        <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                                                    </a>
+                                                </li>
+                                                {% endif %} {% if cabai.page <= 3 %} {% for page_num in range(1, min(cabai.pages, 4) + 1) %} {% if page_num == cabai.page %}
+                                                <li class="page-item active" aria-current="page">
+                                                    <span class="page-link">{{ page_num }}</span>
+                                                </li>
+                                                {% else %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('views.dataproduksi', page=page_num) }}">{{ page_num }}</a>
+                                                </li>
+                                                {% endif %} {% endfor %} {% if cabai.pages > 3 %}
+                                                <li class="page-item disabled border-secondary border-1">
+                                                    <a class="page-link" href="#">…</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('views.dataproduksi', page=cabai.pages) }}">{{ cabai.pages }}</a>
+                                                </li>
+                                                {% endif %} {% elif cabai.page >= cabai.pages - 2 %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('views.dataproduksi', page=1) }}">1</a>
+                                                </li>
+                                                <li class="page-item disabled border-secondary border-1">
+                                                    <a class="page-link" href="#">…</a>
+                                                </li>
+                                                {% for page_num in range(max(1, cabai.pages - 3), cabai.pages + 1) %} {% if page_num == cabai.page %}
+                                                <li class="page-item active" aria-current="page">
+                                                    <span class="page-link">{{ page_num }}</span>
+                                                </li>
+                                                {% else %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('views.dataproduksi', page=page_num) }}">{{ page_num }}</a>
+                                                </li>
+                                                {% endif %} {% endfor %} {% else %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('views.dataproduksi', page=1) }}">1</a>
+                                                </li>
+                                                <li class="page-item disabled border-secondary border-1">
+                                                    <a class="page-link" href="#">…</a>
+                                                </li>
+                                                {% for page_num in range(cabai.page - 1, cabai.page + 2) %} {% if page_num == cabai.page %}
+                                                <li class="page-item active" aria-current="page">
+                                                    <span class="page-link">{{ page_num }}</span>
+                                                </li>
+                                                {% else %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('views.dataproduksi', page=page_num) }}">{{ page_num }}</a>
+                                                </li>
+                                                {% endif %} {% endfor %}
+                                                <li class="page-item disabled border-secondary border-1">
+                                                    <a class="page-link" href="#">…</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('views.dataproduksi', page=cabai.pages) }}">{{ cabai.pages }}</a>
+                                                </li>
+                                                {% endif %} {% if cabai.has_next %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('views.dataproduksi', page=cabai.next_num) }}" aria-label="Next">
+                                                        <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                                                    </a>
+                                                </li>
+                                                {% else %}
+                                                <li class="page-item disabled">
+                                                    <a class="page-link" href="#" aria-label="Next">
+                                                        <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                            </ul>
+                                        </ul>
+                                    </nav>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+                            <div class="table-responsive">
+                                <form action="#" method="post">
+                                    <table class="table text-nowrap mb-0 align-middle">
+                                        <thead class="text-dark fs-4">
+                                            <tr>
+                                                <th class="align-middle text-center max-width">
+                                                    <h6 class="fw-semibold mb-0">No</h6>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <a href="#" class="fw-semibold mb-0 h6" data-sort-by="kebun">Kebun <i class="ti ti-arrows-down-up"></i></a>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <a href="#" class="fw-semibold mb-0 h6" data-sort-by="bibit">Jumlah Bibit <i class="ti ti-arrows-down-up"></i></a>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <a href="#" class="fw-semibold mb-0 h6" data-sort-by="tanam">Tanggal Penanaman <i class="ti ti-arrows-down-up"></i></a>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <a href="#" class="fw-semibold mb-0 h6" data-sort-by="status">Status <i class="ti ti-arrows-down-up"></i></a>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <a href="#" class="fw-semibold mb-0 h6" data-sort-by="hasil">Hasil Panen <i class="ti ti-arrows-down-up"></i></a>
+                                                </th>
+                                                <th class="align-middle text-center">
+                                                    <h6 class="fw-semibold mb-0">Menu</h6>
+                                                </th>
+                                                <th class="justify-content-center align-items-center d-flex flex-column gap-2">
+                                                    <button type="button" class="btn btn-sm btn-danger btn-delete-selected" disabled>Hapus Pilihan</button>
+                                                    <div class="form-check align-middle mb-0">
+                                                        <input class="form-check-input" type="checkbox" value="" id="selectDelAllTomat" />
+                                                        <label class="form-check-label small" for="selectDelAllTomat"> Pilih Semua </label>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for data_tomat in tomat %}
+                                            <tr>
+                                                <td class="border-bottom-0">
+                                                    <h6 class="fw-semibold mb-0">{{ loop.index }}</h6>
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <h6 class="fw-semibold mb-1">{{ data_tomat.kebun }}</h6>
+                                                    <!-- <span class="fw-normal">Skala Besar</span> -->
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <p class="mb-0 fw-normal">{{ data_tomat.jml_bibit }}</p>
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <p class="mb-0 fw-normal">{{ data_tomat.tanggal_bibit }}</p>
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="badge {% if data_tomat.status == 'Panen' %} bg-green {% else %} bg-yellow {% endif %} rounded-3 fw-semibold">{{ data_tomat.status }}</span>
+                                                    </div>
+                                                </td>
+                                                <td class="border-bottom-0">
+                                                    <div class="fw-bold">
+                                                        <strong>{{ data_tomat.jml_panen/1000 }}</strong>
+                                                    </div>
+                                                    <div class="small">{{ data_tomat.tanggal_panen }}</div>
+                                                </td>
+                                                <td class="border-bottom-0 align-middle">
+                                                    <!-- <a class="btn btn-danger fs-6" href="{{ url_for('views.delete_data_pangan', id=data_tomat.id ) }}"><i class="ti ti-trash"></i></a> -->
+                                                    <button id="deleteDataBtn" type="button" class="btn btn-red fs-6" data-bs-toggle="modal" data-bs-target="#deleteData{{data_tomat.id}}"><i class="ti ti-trash"></i></button>
+                                                    <button id="updateDataBtn" type="button" class="btn btn-green fs-6" data-bs-toggle="modal" data-bs-target="#updateData{{data_tomat.id}}"><i class="ti ti-edit"></i></button>
+                                                </td>
+                                                <td class="border-bottom-0 align-middle text-center">
+                                                    <div class="form-check d-flex justify-content-center">
+                                                        <input class="form-check-input delete_ids" type="checkbox" name="delete_ids" value="{{ data_tomat.id }}" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <nav aria-label="Page navigation for table" class="mt-4">
+                                        <ul class="pagination justify-content-center">
+                                            {% if tomat.has_prev %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('views.dataproduksi', page=tomat.prev_num) }}" aria-label="Previous">
+                                                    <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                                                </a>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" aria-label="Previous">
+                                                    <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                                                </a>
+                                            </li>
+                                            {% endif %} {% if tomat.page <= 3 %} {% for page_num in range(1, min(tomat.pages, 4) + 1) %} {% if page_num == tomat.page %}
+                                            <li class="page-item active" aria-current="page">
+                                                <span class="page-link">{{ page_num }}</span>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('views.dataproduksi', page=page_num) }}">{{ page_num }}</a>
+                                            </li>
+                                            {% endif %} {% endfor %} {% if tomat.pages > 3 %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#">…</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('views.dataproduksi', page=tomat.pages) }}">{{ tomat.pages }}</a>
+                                            </li>
+                                            {% endif %} {% elif tomat.page >= tomat.pages - 2 %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('views.dataproduksi', page=1) }}">1</a>
+                                            </li>
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#">…</a>
+                                            </li>
+                                            {% for page_num in range(max(1, tomat.pages - 3), tomat.pages + 1) %} {% if page_num == tomat.page %}
+                                            <li class="page-item active" aria-current="page">
+                                                <span class="page-link">{{ page_num }}</span>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('views.dataproduksi', page=page_num) }}">{{ page_num }}</a>
+                                            </li>
+                                            {% endif %} {% endfor %} {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('views.dataproduksi', page=1) }}">1</a>
+                                            </li>
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#">…</a>
+                                            </li>
+                                            {% for page_num in range(tomat.page - 1, tomat.page + 2) %} {% if page_num == tomat.page %}
+                                            <li class="page-item active" aria-current="page">
+                                                <span class="page-link">{{ page_num }}</span>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('views.dataproduksi', page=page_num) }}">{{ page_num }}</a>
+                                            </li>
+                                            {% endif %} {% endfor %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#">…</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('views.dataproduksi', page=tomat.pages) }}">{{ tomat.pages }}</a>
+                                            </li>
+                                            {% endif %} {% if tomat.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('views.dataproduksi', page=tomat.next_num) }}" aria-label="Next">
+                                                    <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                                                </a>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" aria-label="Next">
+                                                    <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                                                </a>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+    const delBtns = document.querySelectorAll('.btn-delete-selected');
+    const confirmDel = document.querySelectorAll('.confirm-delete');
+    const checkDelBtns = document.getElementsByName('delete_ids');
+    const checkAllCabai = document.getElementById('selectDelAllCabai');
+    const checkAllTomat = document.getElementById('selectDelAllTomat');
+
+    // Fungsi untuk mengupdate state tombol "Delete Selected"
+    const updateButtonState = () => {
+        let isChecked = false;
+        checkDelBtns.forEach((checkbox) => {
+            isChecked = isChecked || checkbox.checked;
+        });
+        delBtns.forEach((btn) => {
+            btn.disabled = !isChecked;
+        });
+        confirmDel.forEach((btn) => {
+            btn.disabled = !isChecked;
+        });
+    };
+
+    // Event listener untuk checkbox "Select All"
+    checkAllCabai.addEventListener('change', () => {
+        checkDelBtns.forEach((checkbox) => {
+            checkbox.checked = checkAllCabai.checked;
+        });
+        updateButtonState();
+    });
+
+    // Event listener untuk checkbox "Select All"
+    checkAllTomat.addEventListener('change', () => {
+        checkDelBtns.forEach((checkbox) => {
+            checkbox.checked = checkAllTomat.checked;
+        });
+        updateButtonState();
+    });
+
+    // Event listener untuk setiap checkbox individual
+    checkDelBtns.forEach((checkbox) => {
+        checkbox.addEventListener('change', updateButtonState);
+    });
+
+    // Inisialisasi state tombol "Delete Selected"
+    updateButtonState();
+
+    // Fungsi untuk submit form ketika tombol "Delete Selected" diklik
+    $(function () {
+        $(confirmDel).click(function () {
+            var form = $(this).closest('form');
+            form.attr('action', "{{ url_for('views.delete_selected_data_pangan') }}");
+            form.submit();
+        });
+    });
+</script>
+
+<script>
+    const tableHeaders = document.querySelectorAll('th a');
+    const tableBody = document.querySelector('tbody');
+
+    let sortBy = '{{ sort_by }}';
+    let sortOrder = '{{ sort_order }}';
+
+    function updateSortIcons() {
+        tableHeaders.forEach((header) => {
+            const icon = header.querySelector('i');
+            if (header.dataset.sortBy === sortBy) {
+                icon.className = sortOrder === 'asc' ? 'ti ti-arrow-up' : 'ti ti-arrow-down';
+            } else {
+                icon.className = 'ti ti-arrows-down-up';
+            }
+        });
+    }
+
+    function updateURL(sortBy, sortOrder) {
+        const url = new URL(window.location);
+        url.searchParams.set('sort_by', sortBy);
+        url.searchParams.set('sort_order', sortOrder);
+        window.history.pushState({}, '', url);
+    }
+
+    tableHeaders.forEach((header) => {
+        header.addEventListener('click', (event) => {
+            event.preventDefault();
+            const newSortBy = header.dataset.sortBy;
+            const newSortOrder = newSortBy === sortBy && sortOrder === 'asc' ? 'desc' : 'asc';
+
+            sortBy = newSortBy;
+            sortOrder = newSortOrder;
+
+            updateSortIcons();
+            updateURL(sortBy, sortOrder);
+
+            // Reload the page with new sorting parameters
+            window.location.reload();
+        });
+    });
+
+    // Initialize sort icons
+    updateSortIcons();
+</script>
+
+<script>
+    const selectPangan = document.getElementById('select-pangan');
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const filterButton = document.getElementById('filter-button');
+    const resetButton = document.getElementById('reset-button');
+    const chartContainer = document.getElementById('chart');
+    const chartContainer2 = document.getElementById('chart2');
+
+    let statCabai = JSON.parse('{{ stat_cabai | safe }}');
+    let statTomat = JSON.parse('{{ stat_tomat | safe }}');
+    let tanggalCabai = JSON.parse('{{ tgl_panen_cabai | safe }}');
+    let tanggalTomat = JSON.parse('{{ tgl_panen_tomat | safe }}');
+
+    let statCabaiConv = statCabai.map((value) => value / 1000);
+    let statTomatConv = statTomat.map((value) => value / 1000);
+
+    let bulanIndonesia = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+    let formattedDates = tanggalCabai.map((tanggal) => {
+        let dateObject = new Date(tanggal);
+        let tanggalFormatted = dateObject.getDate();
+        let bulan = bulanIndonesia[dateObject.getMonth()];
+        let tahun = dateObject.getFullYear();
+        return tanggalFormatted + ' ' + bulan + ' ' + tahun;
+    });
+
+    let totalPanenCabai = parseFloat('{{totalPanenCabai}}', 10);
+    let totalPanenTomat = parseFloat('{{totalPanenTomat}}', 10);
+
+    let breakupChart = null;
+
+    // Inisialisasi chart (lakukan ini hanya sekali saat halaman dimuat)
+    let chartcabai = null;
+    let charttomat = null;
+
+    $(function () {
+        const baseChartOptions = {
+            chart: {
+                default_locale: 'en',
+                locales: [
+                    {
+                        name: 'en',
+                        options: {
+                            months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+                            shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                            days: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+                            shortDays: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                            toolbar: {
+                                download: 'Download SVG',
+                                selection: 'Selection',
+                                selectionZoom: 'Selection Zoom',
+                                zoomIn: 'Zoom In',
+                                zoomOut: 'Zoom Out',
+                                pan: 'Panning',
+                                reset: 'Reset Zoom',
+                            },
+                        },
+                    },
+                ],
+                type: 'bar',
+                height: 345,
+                offsetX: -15,
+                toolbar: { show: true },
+                foreColor: '#adb0bb',
+                fontFamily: 'inherit',
+                sparkline: { enabled: false },
+            },
+            // ... other common options
+        };
+
+        // Fungsi untuk memperbarui opsi chart
+        function updateChartOptions(chart, data, categories, color) {
+            chart.updateOptions({
+                series: [{ name: 'Panen ' + (data === statCabaiConv ? 'Cabai' : 'Tomat'), data: data }],
+                colors: color,
+                xaxis: {
+                    categories: categories,
+                    labels: {
+                        style: { cssClass: 'grey--text lighten-2--text fill-color' },
+                    },
+                },
+            });
+        }
+
+        // Fungsi untuk menyaring data dan memperbarui chart
+        function filterData() {
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+
+            const filteredCabaiData = statCabaiConv.filter((value, index) => {
+                const date = new Date(tanggalCabai[index]);
+                return date >= startDate && date <= endDate;
+            });
+
+            const filteredTomatData = statTomatConv.filter((value, index) => {
+                const date = new Date(tanggalTomat[index]);
+                return date >= startDate && date <= endDate;
+            });
+
+            const filteredTanggalCabai = tanggalCabai.filter((tanggal, index) => {
+                const date = new Date(tanggal);
+                return date >= startDate && date <= endDate;
+            });
+
+            const filteredTanggalTomat = tanggalTomat.filter((tanggal, index) => {
+                const date = new Date(tanggal);
+                return date >= startDate && date <= endDate;
+            });
+
+            updateChartOptions(chartcabai, filteredCabaiData, filteredTanggalCabai, '#ff6b6b');
+            updateChartOptions(charttomat, filteredTomatData, filteredTanggalTomat, '#fcb45e');
+        }
+
+        // Fungsi untuk mereset chart ke data awal
+        function resetChart() {
+            updateChartOptions(chartcabai, statCabaiConv, tanggalCabai, '#ff6b6b');
+            updateChartOptions(charttomat, statTomatConv, tanggalTomat, '#fcb45e');
+            startDateInput.value = '';
+            endDateInput.value = '';
+        }
+
+        // Membuat chart cabai
+        chartcabai = new ApexCharts(chartContainer, {
+            ...baseChartOptions,
+            series: [{ name: 'Panen Cabai', data: statCabaiConv }],
+            colors: '#ff6b6b',
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '35%',
+                    borderRadius: [6],
+                    borderRadiusApplication: 'end',
+                    borderRadiusWhenStacked: 'all',
+                },
+            },
+            markers: { size: 0 },
+            dataLabels: {
+                enabled: false,
+            },
+            legend: {
+                show: false,
+            },
+            grid: {
+                borderColor: 'rgba(0,0,0,0.1)',
+                strokeDashArray: 3,
+                xaxis: {
+                    lines: {
+                        show: false,
+                    },
+                },
+            },
+            xaxis: {
+                type: 'datetime',
+                categories: tanggalCabai,
+                labels: {
+                    style: { cssClass: 'grey--text lighten-2--text fill-color' },
+                },
+            },
+            yaxis: {
+                show: true,
+                min: 0,
+                max: 25,
+                tickAmount: 5,
+                labels: {
+                    style: {
+                        cssClass: 'grey--text lighten-2--text fill-color',
+                    },
+                },
+            },
+            stroke: {
+                show: true,
+                width: 4,
+                lineCap: 'butt',
+                colors: ['transparent'],
+            },
+            tooltip: {
+                theme: 'dark',
+                x: {
+                    format: 'dd MMM yyyy',
+                },
+                y: {
+                    formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+                        return `${value} kg`;
+                    },
+                },
+            },
+            responsive: [
+                {
+                    breakpoint: 600,
+                    options: {
+                        plotOptions: {
+                            bar: {
+                                borderRadius: 3,
+                            },
+                        },
+                    },
+                },
+            ],
+        });
+        chartcabai.render();
+
+        // Membuat chart tomat
+        charttomat = new ApexCharts(chartContainer2, {
+            ...baseChartOptions,
+            series: [{ name: 'Panen Tomat', data: statTomatConv }],
+            colors: '#fcb45e',
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '35%',
+                    borderRadius: [6],
+                    borderRadiusApplication: 'end',
+                    borderRadiusWhenStacked: 'all',
+                },
+            },
+            markers: { size: 0 },
+            dataLabels: {
+                enabled: false,
+            },
+            legend: {
+                show: false,
+            },
+            grid: {
+                borderColor: 'rgba(0,0,0,0.1)',
+                strokeDashArray: 3,
+                xaxis: {
+                    lines: {
+                        show: false,
+                    },
+                },
+            },
+            xaxis: {
+                type: 'datetime',
+                categories: tanggalTomat,
+                labels: {
+                    style: { cssClass: 'grey--text lighten-2--text fill-color' },
+                },
+            },
+            yaxis: {
+                show: true,
+                min: 0,
+                max: 25,
+                tickAmount: 5,
+                labels: {
+                    style: {
+                        cssClass: 'grey--text lighten-2--text fill-color',
+                    },
+                },
+            },
+            stroke: {
+                show: true,
+                width: 3,
+                lineCap: 'butt',
+                colors: ['transparent'],
+            },
+            tooltip: {
+                theme: 'dark',
+                x: {
+                    format: 'dd MMM yyyy',
+                },
+                y: {
+                    formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+                        return `${value} kg`;
+                    },
+                },
+            },
+            responsive: [
+                {
+                    breakpoint: 600,
+                    options: {
+                        plotOptions: {
+                            bar: {
+                                borderRadius: 3,
+                            },
+                        },
+                    },
+                },
+            ],
+        });
+        charttomat.render();
+
+        // Membuat chart breakup
+        breakupChart = new ApexCharts(document.querySelector('#breakup'), {
+            color: '#adb5bd',
+            series: [totalPanenCabai / 1000, totalPanenTomat / 1000],
+            labels: ['Cabai', 'Tomat'],
+            chart: {
+                width: 260,
+                type: 'donut',
+                fontFamily: "Plus Jakarta Sans', sans-serif",
+                foreColor: '#adb0bb',
+            },
+            plotOptions: {
+                pie: {
+                    startAngle: 0,
+                    endAngle: 360,
+                    donut: {
+                        size: '65%',
+                    },
+                },
+            },
+            stroke: {
+                show: false,
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            legend: {
+                show: false,
+            },
+            colors: ['#ff6b6b', '#fcb45e'],
+            responsive: [
+                {
+                    breakpoint: 991,
+                    options: {
+                        chart: {
+                            width: 150,
+                        },
+                    },
+                },
+            ],
+            tooltip: {
+                theme: 'dark',
+                x: {
+                    format: 'dd MMM yyyy',
+                },
+                y: {
+                    formatter: function (value, { series, seriesIndex, dataPointIndex, w }) {
+                        return `${value} kg`;
+                    },
+                },
+            },
+        });
+        breakupChart.render();
+
+        // Menampilkan chart sesuai pilihan
+        function filterPangan() {
+            const selectedValue = selectPangan.value;
+            if (selectedValue === 'chart') {
+                // Pastikan chart cabai sudah render
+                if (!chartcabai.rendered) {
+                    chartcabai.render();
+                }
+                chartContainer.style.display = 'block';
+                chartContainer2.style.display = 'none';
+            } else if (selectedValue === 'chart2') {
+                // Pastikan chart tomat sudah render
+                if (!charttomat.rendered) {
+                    charttomat.render();
+                }
+                chartContainer.style.display = 'none';
+                chartContainer2.style.display = 'block';
+            }
+        }
+
+        selectPangan.addEventListener('change', filterPangan);
+
+        // Menambahkan event listener untuk filter button
+        filterButton.addEventListener('click', filterData);
+
+        // Menambahkan event listener untuk reset button
+        resetButton.addEventListener('click', resetChart);
+
+        function updateBreakupChart() {
+            breakupChart.updateSeries([totalPanenCabai / 1000, totalPanenTomat / 1000]);
+        }
+
+        // Panggil updateBreakupChart() setelah chart breakup dibuat
+        updateBreakupChart();
+    });
+</script>
+{% endblock %}

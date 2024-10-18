@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- ++++++++++++++++++++++++ META TAGS ++++++++++++++++++++++++ -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- OPENGRAPH META TAG -->
+        <meta name="keywords" content="rindang sistem informasi pangan kota ternate kebutuhan cabai barito rica tanam petani" />
+        <meta name="description" content="Rindang: Platform pangan online untuk Kota Ternate. Pangan murah, berkualitas, dan pemberdayaan petani." />
+        <meta property="og:title" content="RINDANG - Rica Tanam Dalam Kampung" />
+        <meta property="og:description" content="Sistem Informasi kebutuhan pangan dan informasi pangan Kota Ternate" />
+        <meta property="og:image" content="https://i.ibb.co.com/8dynFyq/Rindang-OG-Thumbnail.jpg" />
+        <meta property="og:url" content="https://rindang.net" />
+        <meta property="og:type" content="website" />
+
+        <!-- FAVICONS -->
+        <link rel="apple-touch-icon" sizes="180x180" href="../static/favicons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="../static/favicons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="../static/favicons/favicon-16x16.png" />
+        <link rel="manifest" href="../static/favicons/site.webmanifest" />
+        <link rel="mask-icon" href="../static/favicons/safari-pinned-tab.svg" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#b91d47" />
+        <meta name="theme-color" content="#ffffff" />
+        <title>{% block title %} {% endblock %}</title>
+
+        <!-- FONTS -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/plus-jakarta-display.min.css" />
+
+        <!-- ++++++++++++++++++++++++ CSS ++++++++++++++++++++++++ -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css' ) }}" />
+
+        <!-- ++++++++++++++++++++++++ CDNs ++++++++++++++++++++++++ -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"
+            integrity="sha512-DdX/YwF5e41Ok+AI81HI8f5/5UsoxCVT9GKYZRIzpLxb8Twz4ZwPPX+jQMwMhNQ9b5+zDEefc+dcvQoPWGNZ3g=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
+
+        <style>
+            html,
+            body {
+                height: 100%;
+            }
+
+            main {
+                flex: 1 0 auto;
+            }
+
+            footer {
+                flex-shrink: 0;
+            }
+            .bg-green-gradient {
+                height: 75vh;
+                width: 100%;
+                position: absolute;
+                top: 0;
+                background-image: linear-gradient();
+                background: linear-gradient(180deg, #d2f8d2 0%, rgba(255, 255, 255, 0) 100%);
+                z-index: -99;
+            }
+            .bg-gradient-green {
+                background: rgb(95, 170, 78);
+                background: linear-gradient(180deg, rgba(95, 170, 78, 1) 0%, rgba(78, 171, 58, 1) 100%);
+            }
+            .profile-circle {
+                width: 56px;
+                height: 56px;
+                background-color: #8e44ad;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                border-radius: 50%;
+                flex-shrink: 0; /* Prevents shrinking in flexbox */
+                position: relative;
+            }
+            .profile-circle-2 {
+                width: 24px;
+                height: 24px;
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                background-color: #ffb700;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                border-radius: 50%;
+                flex-shrink: 0; /* Prevents shrinking in flexbox */
+            }
+        </style>
+    </head>
+
+    <body class="d-flex flex-column">
+        <!-- <div class="bg-green-gradient"></div> -->
+        <header>
+            <nav class="navbar navbar-expand-lg">
+                <div class="container">
+                    <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='img/rindang-logo.svg' ) }}" alt="" /></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav align-items-lg-center ps-lg-4 ps-0 me-lg-auto mb-lg-0 mb-4 column-gap-lg-3">
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'home' %}active{% endif %}" href="/">Beranda</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="nav-about" class="nav-link" href="#about">Tentang</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="nav-galery" class="nav-link" href="#galery">Galeri</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="nav-contact" class="nav-link" href="#contact">Kontak</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Features </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ url_for('views.rindangpedia' ) }}">Rindang Pedia</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('views.rindangtalk' ) }}">Rindang Talk</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('views.virtual_assistant' ) }}">Rindang AI</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('views.weather' ) }}">Prakiraan Cuaca</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        {% if not current_user.is_authenticated %}
+                        <ul class="navbar-nav ms-lg-auto flex-column flex-lg-row mb-lg-0 column-gap-lg-3">
+                            <li class="nav-item">
+                                <a id="nav" class="nav-link" aria-current="page" href="{{ url_for('auth.login' ) }}">Masuk</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-warning btn-yellow px-4" href="{{ url_for('auth.register' ) }}">Daftar</a>
+                            </li>
+                        </ul>
+                        {% else %} {% if current_user.role == 'admin' %}
+                        <div class="dropdown">
+                            <a class="nav-link gap-2" href="javascript:void(0)" id="drop2" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="me-2 d-none d-lg-inline">{{ current_user.username }}</span>
+                                <img class="img-profile rounded-circle" src="{{ url_for('static', filename='admin/images/profile/user-1.jpg') }}" width="35" height="35" />
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                <div class="message-body">
+                                    <a href="{{ url_for('admin_page.profile', username=current_user.username) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="person"></ion-icon>
+                                        <p class="mb-0">Profil</p>
+                                    </a>
+                                    <a href="{{ url_for('auth.logout') }}" class="d-flex align-items-center gap-2 dropdown-item"><ion-icon name="power"></ion-icon> Keluar</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="dropdown ms-lg-auto">
+                            <a class="nav-link" href="javascript:void(0)" id="drop2" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="me-2 d-none d-lg-inline">{{ current_user.username }}</span>
+                                <img class="img-profile rounded-circle" src="   ../../static/admin/images/profile/user-1.jpg" width="35" height="35" />
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                <div class="message-body">
+                                    <span class="d-flex align-items-center dropdown-item">
+                                        <a href="{{ url_for('views.personal' ) }}" class="btn btn-green text-white">Layanan Personal</a>
+                                    </span>
+                                    <hr />
+                                    <a href="{{ url_for('views.profil' ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="person"></ion-icon>
+                                        <p class="mb-0">Edit Profil</p>
+                                    </a>
+                                    <a href="{{ url_for('views.settings' ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="settings"></ion-icon>
+                                        <p class="mb-0">Pengaturan</p>
+                                    </a>
+                                    <a href="{{ url_for('auth.logout' ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="power"></ion-icon>
+                                        <p class="mb-0">Keluar</p></a
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+                </div>
+            </nav>
+            <!-- END OF NAVBAR -->
+        </header>
+
+        <main class="container py-4 flex-fill">{% block content %} {% endblock %}</main>
+
+        <!-- ++++++++++++++++++++++++ FOOTER ++++++++++++++++++++++++ -->
+        <footer class="pt-3 my-auto">
+            <section id="contact" class="py-4" style="background-color: #4f8843">
+                <div class="container text-light">
+                    <div class="row">
+                        <div class="col-12 col-lg-6 mb-4 mb-lg-0">
+                            <div class="mb-4">
+                                <a class="navbar-brand" href="/"><img src="../static/img/rindang-logo-white.svg" alt="" /></a>
+                            </div>
+                            <div class="mb-4 small">
+                                <strong>Benteng Orange</strong>
+                                <p>Creative Space X, Ternate Tengah</p>
+                            </div>
+                            <div class="mb-4 small">
+                                <p class="mb-0">Telepon : +62 812 4403 6006</p>
+                                <p>Email : rindangternate@gmail.com</p>
+                            </div>
+                            <div class="d-flex gap-4">
+                                <a href="#" class="fs-3 link-light link-opacity-50-hover"><ion-icon name="logo-facebook"></ion-icon></a>
+                                <a href="#" class="fs-3 link-light link-opacity-50-hover"><ion-icon name="logo-twitter"></ion-icon></a>
+                                <a href="#" class="fs-3 link-light link-opacity-50-hover"><ion-icon name="logo-instagram"></ion-icon></a>
+                                <a href="#" class="fs-3 link-light link-opacity-50-hover"><ion-icon name="logo-linkedin"></ion-icon></a>
+                                <a href="#" class="fs-3 link-light link-opacity-50-hover"><ion-icon name="logo-youtube"></ion-icon></a>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-2 mb-4 mb-lg-0">
+                            <p>Kelurahan-Kelurahan</p>
+                            <div class="d-flex flex-column gap-2">
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Sasa</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Kalumpang</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Tubo</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Kulaba</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Foramadiahi</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Santiong</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Fitu</a>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-2 mb-4 mb-lg-0">
+                            <p>Rindang</p>
+                            <div class="d-flex flex-column gap-2">
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Apa itu Rindang</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Pertanyaan-Pertanyaan</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Galeri</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kolaborator</a>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-2 mb-4 mb-lg-0">
+                            <p>Kategori</p>
+                            <div class="d-flex flex-column gap-2">
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Pertanian Skala Besar</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Urban Farming</a>
+                                <a href="#" class="link-light link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Pertanian Skala Rumahan</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="py-3 text-light" style="background-color: #2b661f">
+                <div class="row">
+                    <small class="col small text-center text-wrap flex-wrap"> Copyright &copy; <strong>Rindang 2024</strong> - All Rights Reserved </small>
+                </div>
+            </section>
+        </footer>
+
+        <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
+
+        {% block scripts %} {% endblock %}
+    </body>
+</html>

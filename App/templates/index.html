@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- ++++++++++++++++++++++++ META TAGS ++++++++++++++++++++++++ -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- OPENGRAPH META TAG -->
+        <meta name="keywords" content="rindang sistem informasi pangan kota ternate kebutuhan cabai barito rica tanam petani" />
+        <meta name="description" content="Rindang adalah platform online yang menghubungkan kebutuhan dan informasi pangan. Tetap terhubung dan temukan informasi terkini serta bergabung untuk menjadi bagian dari kami." />
+        <meta property="og:title" content="RINDANG - Platform Digital Pertanian Terintegrasi" />
+        <meta property="og:description" content="Sistem Informasi kebutuhan pangan dan informasi pangan Kota Ternate" />
+        <meta property="og:image" content="https://i.ibb.co.com/8dynFyq/Rindang-OG-Thumbnail.jpg" />
+        <meta property="og:url" content="https://rindang.net" />
+        <meta property="og:type" content="website" />
+
+        <meta name="google-site-verification" content="CE4GbWjztoabtje-NX5_5eXarrr7Tw7Q3si7eYL1rME" />
+
+        <!-- FAVICONS -->
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}" />
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}" />
+        <link rel="manifest" href="{{ url_for('static', filename='favicons/site.webmanifest') }}" />
+        <link rel="mask-icon" href="{{ url_for('static', filename='favicons/safari-pinned-tab.svg') }}" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#ffc40d" />
+        <meta name="theme-color" content="#ffffff" />
+        <title>RINDANG - Platform Digital Pertanian Terintegrasi</title>
+
+        <!-- FONTS -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/plus-jakarta-display.min.css" />
+
+        <!-- ++++++++++++++++++++++++ CSS ++++++++++++++++++++++++ -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+
+        <!-- Preload gambar hero untuk loading lebih cepat -->
+        <link rel="preload" as="image" href="../static/img/chillies.png" />
+        <link rel="preload" as="image" href="../static/img/hero.png" />
+
+        <!-- ++++++++++++++++++++++++ CDNs ++++++++++++++++++++++++ -->
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet" />
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css" />
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+        <style>
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+
+            .b-example-divider {
+                width: 100%;
+                height: 3rem;
+                background-color: rgba(0, 0, 0, 0.1);
+                border: solid rgba(0, 0, 0, 0.15);
+                border-width: 1px 0;
+                box-shadow: inset 0 0.5em 1.5em rgba(0, 0, 0, 0.1), inset 0 0.125em 0.5em rgba(0, 0, 0, 0.15);
+            }
+
+            .b-example-vr {
+                flex-shrink: 0;
+                width: 1.5rem;
+                height: 100vh;
+            }
+
+            .bi {
+                vertical-align: -0.125em;
+                fill: currentColor;
+            }
+
+            .nav-scroller {
+                position: relative;
+                z-index: 2;
+                height: 2.75rem;
+                overflow-y: hidden;
+            }
+
+            .nav-scroller .nav {
+                display: flex;
+                flex-wrap: nowrap;
+                padding-bottom: 1rem;
+                margin-top: -1px;
+                overflow-x: auto;
+                text-align: center;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .btn-bd-primary {
+                --bd-violet-bg: #712cf9;
+                --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+                --bs-btn-font-weight: 600;
+                --bs-btn-color: var(--bs-white);
+                --bs-btn-bg: var(--bd-violet-bg);
+                --bs-btn-border-color: var(--bd-violet-bg);
+                --bs-btn-hover-color: var(--bs-white);
+                --bs-btn-hover-bg: #6528e0;
+                --bs-btn-hover-border-color: #6528e0;
+                --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+                --bs-btn-active-color: var(--bs-btn-hover-color);
+                --bs-btn-active-bg: #5a23c8;
+                --bs-btn-active-border-color: #5a23c8;
+            }
+
+            .bd-mode-toggle {
+                z-index: 1500;
+            }
+
+            .bd-mode-toggle .dropdown-menu .active .bi {
+                display: block !important;
+            }
+
+            /* .animate-hero, */
+            /* .animate-headline, */
+            /* .animate-card { */
+            /*     opacity: 0; */
+            /*     visibility: hidden; */
+            /* } */
+        </style>
+
+        {{ toastr.include_jquery() }} {{ toastr.include_toastr_css() }} {{ toastr.message() }}
+    </head>
+
+    <body class="h-100">
+        <!-- ++++++++++++++++++++++++ HEADER ++++++++++++++++++++++++ -->
+        <header class="h-100">
+            <nav class="navbar navbar-expand-lg position-absolute top-0 w-100 py-4">
+                <div class="container">
+                    <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='img/rindang-logo.svg' ) }}" alt="" /></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav navbar-dark align-items-lg-center ps-lg-4 ps-0 me-lg-auto mb-lg-0 mb-4 column-gap-lg-3">
+                            <li class="nav-item">
+                                <a id="nav-home" class="nav-link active" aria-current="page" href="#hero-section">Beranda</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="nav-about" class="nav-link" href="#about">Tentang</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="nav-galery" class="nav-link" href="#galery">Galeri</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="nav-contact" class="nav-link" href="#contact">Kontak</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Features </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ url_for('views.rindangpedia' ) }}">Rindang Pedia</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('views.rindangtalk' ) }}">Rindang Talk</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('views.virtual_assistant' ) }}">Rindang AI</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('views.weather' ) }}">Prakiraan Cuaca</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        {% if not current_user.is_authenticated %}
+                        <ul class="navbar-nav navbar-dark ms-lg-auto flex-column flex-lg-row mb-lg-0 column-gap-lg-3">
+                            <li class="nav-item">
+                                <a id="nav" class="nav-link" aria-current="page" href="{{ url_for('auth.login' ) }}">Masuk</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-warning btn-yellow px-4" href="{{ url_for('auth.register' ) }}">Daftar</a>
+                                <!-- <button class="btn btn-warning btn-yellow px-4" data-bs-toggle="modal" data-bs-target="#registerModal">Daftar</button> -->
+                            </li>
+                        </ul>
+                        {% else %} {% if current_user.role == 'admin' %}
+                        <div class="dropdown">
+                            <a class="nav-link gap-2" href="javascript:void(0)" id="drop2" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="me-2 d-none d-lg-inline text-light">{{ current_user.username }}</span>
+                                <img class="img-profile rounded-circle" src="{{ url_for('static', filename='admin/images/profile/user-1.jpg') }}" width="35" height="35" />
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                <div class="message-body">
+                                    <a href="{{ url_for('admin_page.profile', username=current_user.username) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="person"></ion-icon>
+                                        <p class="mb-0">Profil</p>
+                                    </a>
+                                    <a href="{{ url_for('auth.logout') }}" class="d-flex align-items-center gap-2 dropdown-item"><ion-icon name="power"></ion-icon> Keluar</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="dropdown ms-lg-auto">
+                            <a class="nav-link" href="javascript:void(0)" id="drop2" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="me-2 d-none d-lg-inline text-light">{{ current_user.username }}</span>
+                                <img class="img-profile rounded-circle" src="   ../../static/admin/images/profile/user-1.jpg" width="35" height="35" />
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-sm-end dropdown-menu-lg-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                <div class="message-body">
+                                    <span class="d-flex align-items-center dropdown-item">
+                                        <a href="{{ url_for('views.personal' ) }}" class="btn btn-green text-white">Layanan Personal</a>
+                                    </span>
+                                    <hr />
+                                    {% if current_user.role == 'personal' %}
+                                    <a href="{{ url_for('views.personalprofile' ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="person"></ion-icon>
+                                        <p class="mb-0">Profil</p>
+                                    </a>
+                                    {% elif current_user.role == 'petani' %}
+                                    <a href="{{ url_for('views.profil' ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="person"></ion-icon>
+                                        <p class="mb-0">Profil</p>
+                                    </a>
+                                    {% else %}
+                                    <a href="{{ url_for('admin_page.profile', username=current_user.username ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="person"></ion-icon>
+                                        <p class="mb-0">Profil</p>
+                                    </a>
+                                    {% endif %}
+                                    <a href="{{ url_for('views.settings' ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="settings"></ion-icon>
+                                        <p class="mb-0">Pengaturan</p>
+                                    </a>
+                                    <a href="{{ url_for('auth.logout' ) }}" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <ion-icon name="power"></ion-icon>
+                                        <p class="mb-0">Keluar</p></a
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+                </div>
+            </nav>
+            <!-- END OF NAVBAR -->
+
+            <!-- SECTIONS -->
+            <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+                <div id="liveToast" class="toast text-bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-body justify-content-center align-items-center">Berhasil Download <ion-icon name="checkmark-circle"></ion-icon></div>
+                </div>
+            </div>
+
+            <section id="hero-section" class="h-100">
+                <img id="hero-bg" src="../static/img/chillies.png" alt="" />
+                <!-- <img id="hero-person" class="d-none d-sm-block" src="../static/img/hero.png" alt="" /> -->
+                <img id="hero-person" class="animate-hero d-none d-lg-block" src="../static/img/hero.png" alt="Hero Image" loading="lazy" />
+                <div class="container h-100 text-white">
+                    <div class="row h-100">
+                        <!-- <div class="col-12 d-flex flex-column justify-content-center" id="hero-headline"> -->
+                        <div id="hero-headline" class="container animate-headline col-12 d-flex flex-column justify-content-center">
+                            <div class="mb-5">
+                                <h1 class="mb-4">
+                                    Digitalisasi Pertanian Menuju <br />
+                                    Petani <span class="text-red">GoDigital</span>
+                                </h1>
+                                <p class="fw-normal h4">
+                                    "Konektivitas Menuju Kemandirian <br />
+                                    Pangan Kota"
+                                </p>
+                            </div>
+                            <div class="d-flex gap-3 flex-column flex-lg-row gap-lg-5 text-center align-items-center">
+                                <a href="{{ url_for('auth.register' ) }}" class="btn btn-warning btn-lg px-4 btn-yellow">Gabung Sekarang</a>
+                                <a
+                                    href="{{ url_for('static', filename='BOOKLET_RINDANG_ESSENTIALS_PRINT.pdf' ) }}"
+                                    id="downloadBtn"
+                                    onclick="downloadNotif()"
+                                    download="{{ url_for('static', filename='BOOKLET_RINDANG_ESSENTIALS_PRINT.pdf' ) }}"
+                                    class="text-yellow link-offset-1"
+                                    >Pelajari Selengkapnya</a
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row d-none d-lg-block">
+                        <div class="col-12">
+                            <div id="info-card" class="animate-card card shadow rounded-5 border-0 detail-card">
+                                <div class="card-body rounded-5">
+                                    <div class="row gap-3 gap-lg-0">
+                                        <div class="col-lg-4">
+                                            <a href="{{ url_for('views.hargakomoditas' ) }}" target="_blank" class="nav-link">
+                                                <div class="card rounded-4">
+                                                    <div class="card-body d-flex gap-3">
+                                                        <div class="bg-yellow p-3 rounded-3">
+                                                            <i class="fas fa-pepper-hot fs-2"></i>
+                                                        </div>
+                                                        <div class="d-flex flex-column lh-0">
+                                                            <p class="lh-0 mb-0">Harga Pangan</p>
+                                                            <p class="h3 fw-bold text-yellow cabai-price">Loading...</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="card rounded-4">
+                                                <div class="card-body d-flex gap-3">
+                                                    <div class="bg-red p-3 rounded-3">
+                                                        <i class="fas fa-seedling fs-2"></i>
+                                                    </div>
+                                                    <div class="d-flex flex-column lh-0">
+                                                        <p class="lh-0 mb-0">Total Produksi</p>
+                                                        <p class="h3 fw-bold text-red">{{ round(produksi/1000, 1) }}kg/bulan</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="card rounded-4">
+                                                <div class="card-body d-flex gap-3">
+                                                    <div class="bg-green p-3 rounded-3">
+                                                        <i class="fas fa-tractor fs-2"></i>
+                                                    </div>
+                                                    <div class="d-flex flex-column lh-0">
+                                                        <p class="lh-0 mb-0">Jumlah Kebun</p>
+                                                        <p class="h3 fw-bold text-green">{{ kebun }} Kebun</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mobile Screen -->
+                    <div class="row carousel-card d-block d-lg-none">
+                        <div class="col-12">
+                            <div id="carouselExampleIndicators" class="carousel slide">
+                                <div class="carousel-indicators mb-1">
+                                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active bg-red" aria-current="true" aria-label="Slide 1"></button>
+                                    <button type="button" class="bg-red" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                    <button type="button" class="bg-red" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                </div>
+                                <div class="card pb-3 rounded-4 border-0 shadow">
+                                    <div class="card-body">
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item active">
+                                                <div class="d-flex gap-3 justify-content-center">
+                                                    <div class="bg-yellow p-3 rounded-3">
+                                                        <i class="fas fa-pepper-hot fs-2"></i>
+                                                    </div>
+                                                    <div class="d-flex flex-column lh-0">
+                                                        <p class="lh-0 mb-0">Harga Pangan</p>
+                                                        <p class="h3 fw-bold text-yellow cabai-price">{% for item in table_data if item.name == 'Cabai Rawit Merah' %}{{ item.price if loop.last }}{% endfor %}/kg</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-item">
+                                                <div class="d-flex gap-3 justify-content-center">
+                                                    <div class="bg-red p-3 rounded-3">
+                                                        <i class="fas fa-seedling fs-2"></i>
+                                                    </div>
+                                                    <div class="d-flex flex-column lh-0">
+                                                        <p class="lh-0 mb-0">Kapasitas Produksi</p>
+                                                        <p class="h3 fw-bold text-red">{{ round(produksi/1000, 1) }}kg/bulan</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-item">
+                                                <div class="d-flex gap-3 justify-content-center">
+                                                    <div class="bg-green p-3 rounded-3">
+                                                        <i class="fas fa-tractor fs-2"></i>
+                                                    </div>
+                                                    <div class="d-flex flex-column lh-0">
+                                                        <p class="lh-0 mb-0">Estimasi Panen</p>
+                                                        <p class="h3 fw-bold text-green">{{ kebun }} Kebun</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon bg-yellow rounded-2" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon bg-yellow rounded-2" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </header>
+        <!-- ++++++++++++++++++++++++ MAIN ++++++++++++++++++++++++ -->
+        <main>
+            <section class="container mb-5 position-relative" id="about" data-aos="fade-up" data-aos-easing="ease-in-out">
+                <!-- <img class="spg d-none d-lg-block" id="superg-1" src="../static/img/aksen01.svg" alt="supergraphic-1.svg"> -->
+                <!-- <img class="spg d-none d-lg-block" id="superg-3" src="../static/img/aksen03.svg" alt="supergraphic-1.svg">
+                <img class="spg d-none d-lg-block" id="superg-4" src="../static/img/aksen04.svg" alt="supergraphic-1.svg"> -->
+                <h2 class="h2 fw-bold text-center display-5 mb-3 mb-lg-5 mt-5 mt-lg-0 pt-4 pt-lg-0">Apa itu <span class="text-red">Rindang?</span></h2>
+                <div class="position-relative mb-5">
+                    <video id="video-player" class="w-100 rounded-5 d-flex justify-content-center align-items-center object-fit-fill shadow" poster="../static/img/video-thumbnail.jpg">
+                        <source src="../static/videos/RINDANG_FULL.mp4" type="video/mp4" />
+                        Your browser does not support HTML video.
+                    </video>
+                    <button id="play-btn" class="btn btn-yellow btn-lg rounded-circle play-button d-flex justify-content-center align-items-center" onclick="playVideo()"><ion-icon name="play-circle"></ion-icon></button>
+                </div>
+                <div class="text-center mb-4">
+                    <div class="fw-bold text-dark-emphasis fs-4">Rindang Dapat Didefinisikan Menjadi 2 Sesuai Ruang Lingkup Kerjanya</div>
+                </div>
+                <div class="row row-gap-3">
+                    <div class="col-12 col-lg-6">
+                        <div class="d-flex gap-3 mb-3">
+                            <img src="../static/icons/number_1.svg" alt="" />
+                            <span class="text-red fw-bold d-flex align-items-center"> Rindang Sebagai Program Ketahanan Pangan Dalam Kampung </span>
+                        </div>
+                        <div class="card rounded-4 border-0 shadow">
+                            <div class="card-body">Berfokus untuk menyediakan kebutuhan pangan yang murah dan berkualitas sekaligus memberdayakan masyarakat baik petani maupun non-petani.</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="d-flex gap-3 mb-3">
+                            <img src="../static/icons/number_2.svg" alt="" />
+                            <span class="text-red fw-bold d-flex align-items-center"> Rindang Sebagai Ekosistem Pertanian </span>
+                        </div>
+                        <div class="card rounded-4 border-0 shadow">
+                            <div class="card-body">
+                                Menyediakan kebutuhan yang diperlukan untuk mengaktivasi segala aktivitas pertanian yang berkelanjutan, membangun SDM yang berkompeten di bidang pertanian, serta memiliki koneksi ke jejaring pasar agar
+                                memudahkan penjualan hasil panen Rindang juga dapat dilihat sebagai framework (kerangka kerja) pertanian yang bisa di terapkan ke komoditas holtikultura lainnya.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="container mb-5" data-aos="fade-up" data-aos-easing="ease-in-out">
+                <div class="row">
+                    <!-- <img class="d-none d-lg-block" id="superg-2" src="../static/img/aksen02.svg" alt="supergraphic-1.svg"> -->
+                    <h2 class="h2 fw-bold text-center display-5 mb-5">Kelurahan-Kelurahan yang <span class="text-red"> Tergabung</span></h2>
+                    <div class="col-12 col-lg-12 mb-3">
+                        <ul class="nav nav-pills mb-3 justify-content-center justify-content-sm-start" id="pills-tab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button
+                                    onclick="allTab()"
+                                    class="nav-link active text-green-dark d-flex align-items-center gap-2"
+                                    id="pills-all-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#pills-all"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="pills-all"
+                                    aria-selected="true"
+                                >
+                                    <ion-icon name="grid"></ion-icon> Semua
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button
+                                    onclick="categoryTab()"
+                                    class="nav-link text-green-dark d-flex align-items-center gap-2"
+                                    id="pills-category-tab"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#pills-category"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="pills-category"
+                                    aria-selected="false"
+                                >
+                                    <ion-icon name="book"></ion-icon>Kategori
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab" tabindex="0">
+                                <div class="mb-2 fw-bold text-dark d-flex gap-2 align-items-center"><ion-icon name="grid"></ion-icon> Semua Kelurahan yang Terlibat</div>
+                                <p class="mb-0">Terdapat 7 Kelurahan yang terlibat dalam program ketahan pangan Rindangdiharapkan kedepan makin banyak lagi kelurahan yang terlibat di program rindang</p>
+                            </div>
+                            <div class="tab-pane fade" id="pills-category" role="tabpanel" aria-labelledby="pills-category-tab" tabindex="0">
+                                <div class="accordion" id="accordionExample">
+                                    <div class="accordion-item">
+                                        <h3 class="accordion-header">
+                                            <button
+                                                class="accordion-button accordion-button-village fw-bold text-dark d-flex gap-2 align-items-center"
+                                                type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapseOne"
+                                                aria-expanded="true"
+                                                aria-controls="collapseOne"
+                                            >
+                                                <ion-icon name="pie-chart"></ion-icon>
+                                                Pertanian Skala Besar
+                                            </button>
+                                        </h3>
+                                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body text-body-secondary">
+                                                <strong>Pertanian Skala Besar</strong> merupakan kategori kelurahan yang sudah dapat menghasilkan hasil produksi yang besar dan dapat melakukan pembibitan mandiri
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h3 class="accordion-header">
+                                            <button
+                                                class="accordion-button accordion-button-village fw-bold text-dark d-flex gap-2 align-items-center collapsed"
+                                                type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapseTwo"
+                                                aria-expanded="false"
+                                                aria-controls="collapseTwo"
+                                            >
+                                                <ion-icon name="layers"></ion-icon> Urban Farming
+                                            </button>
+                                        </h3>
+                                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body">
+                                                <strong><em>Urban farming</em></strong> merupakan pertanian yang memanfaatkan lahan di tempat sempit dan sudah menghasilkan hasil produksi yang banyak
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h3 class="accordion-header">
+                                            <button
+                                                class="accordion-button accordion-button-village fw-bold text-dark d-flex gap-2 align-items-center collapsed"
+                                                type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#collapseThree"
+                                                aria-expanded="false"
+                                                aria-controls="collapseThree"
+                                            >
+                                                <ion-icon name="home"></ion-icon> Pertanian Skala Rumahan
+                                            </button>
+                                        </h3>
+                                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body"><strong>Pertanian Skala Rumahan</strong> merupakan katogeri kelurahan yang memanfaatkan lahan rumah dan beranggotakan ibu rumah tangga</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="tabs-content-1" id="tabs-content-1">
+                            <!-- ******************* MOBILE VIEW ******************* -->
+                            <div id="carouselExampleCaptions" class="carousel slide d-block d-lg-none">
+                                <div class="carousel-indicators">
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="5" aria-label="Slide 6"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="6" aria-label="Slide 7"></button>
+                                </div>
+                                <div class="card card-green-outline">
+                                    <div class="card-body">
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item active">
+                                                <div class="my-card-img ratio ratio-1x1 mb-3">
+                                                    <img class="object-fit-cover rounded-top-3" src="../static/galery/pict4.jpg" alt="" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Sasa</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Tubo</p>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-item">
+                                                <div class="my-card-img ratio ratio-1x1 mb-3">
+                                                    <img class="object-fit-cover rounded-top-3" src="../static/galery/pict3.jpg" alt="" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Kulaba</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Tubo</p>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-item">
+                                                <div class="my-card-img ratio ratio-1x1 mb-3">
+                                                    <img class="object-fit-cover rounded-top-3" src="../static/galery/pict1.jpg" alt="" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Foramadiahi</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Tubo</p>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-item">
+                                                <div class="my-card-img ratio ratio-1x1 mb-3">
+                                                    <img class="object-fit-cover rounded-top-3" src="../static/galery/pict6.jpg" alt="" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Foramadiahi</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Tubo</p>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-item">
+                                                <div class="my-card-img ratio ratio-1x1 mb-3">
+                                                    <img class="object-fit-cover rounded-top-3" src="../static/galery/pict7.jpg" alt="" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Foramadiahi</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Tubo</p>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-item">
+                                                <div class="my-card-img ratio ratio-1x1 mb-3">
+                                                    <img class="object-fit-cover rounded-top-3" src="../static/galery/pict4.jpg" alt="" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Foramadiahi</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Tubo</p>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-item">
+                                                <div class="my-card-img ratio ratio-1x1 mb-3">
+                                                    <img class="object-fit-cover rounded-top-3" src="../static/galery/pict1.jpg" alt="" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Foramadiahi</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Tubo</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                            <!-- ******************* DESKTOP VIEW ******************* -->
+                            <div class="collapse d-none d-lg-block fade show" id="all-tab-collapse">
+                                <div class="row justify-content-lg-center">
+                                    <div class="col-6">
+                                        <div class="card card-green-outline border mb-3">
+                                            <div class="card-body d-flex gap-3">
+                                                <div class="ratio ratio-1x1 desktop-card-img">
+                                                    <img class="object-fit-cover rounded rounded-3" src="../static/galery/pict4.jpg" alt="Kelurahan Sasa.jpg" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Sasa</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Ibu-Ibu PKK</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card card-green-outline border mb-3">
+                                            <div class="card-body d-flex gap-3">
+                                                <div class="ratio ratio-1x1 desktop-card-img">
+                                                    <img class="object-fit-cover rounded rounded-3" src="../static/galery/pict3.jpg" alt="Kelurahan Sasa.jpg" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Kulaba</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Ibu-Ibu PKK</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card card-green-outline border mb-3">
+                                            <div class="card-body d-flex gap-3">
+                                                <div class="ratio ratio-1x1 desktop-card-img">
+                                                    <img class="object-fit-cover rounded rounded-3" src="../static/galery/pict1.jpg" alt="Kelurahan Sasa.jpg" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Foramadiahi</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Ibu-Ibu PKK</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="card card-green-outline border mb-3">
+                                            <div class="card-body d-flex gap-3">
+                                                <div class="ratio ratio-1x1 desktop-card-img">
+                                                    <img class="object-fit-cover rounded rounded-3" src="../static/galery/pict7.jpg" alt="Kelurahan Sasa.jpg" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Tubo</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Ibu-Ibu PKK</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card card-green-outline border mb-3">
+                                            <div class="card-body d-flex gap-3">
+                                                <div class="ratio ratio-1x1 desktop-card-img">
+                                                    <img class="object-fit-cover rounded rounded-3" src="../static/galery/pict4.jpg" alt="Kelurahan Sasa.jpg" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Santiong</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Ibu-Ibu PKK</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card card-green-outline border mb-3">
+                                            <div class="card-body d-flex gap-3">
+                                                <div class="ratio ratio-1x1 desktop-card-img">
+                                                    <img class="object-fit-cover rounded rounded-3" src="../static/galery/pict1.jpg" alt="Kelurahan Sasa.jpg" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Fitu</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Ibu-Ibu PKK</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="card card-green-outline border mb-3">
+                                            <div class="card-body d-flex gap-3">
+                                                <div class="ratio ratio-1x1 desktop-card-img">
+                                                    <img class="object-fit-cover rounded rounded-3" src="../static/galery/pict6.jpg" alt="Kelurahan Sasa.jpg" />
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold fs-5">Kelurahan Kalumpang</div>
+                                                    <p class="text-dark">Kelurahan Sasa terletak di Kecamatan Ternate Selatan. Anggota Komunitas Petani Rindang di Kelurahan Sasa didominasi oleh Ibu-Ibu PKK</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tabs-content-2" id="tabs-content-2">
+                            <div class="collapse fade" id="category-tab-collapse">
+                                <!-- <div id="map" style="width: auto; height: 400px"></div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="galery" class="container mb-5" data-aos="fade-up" data-aos-easing="ease-in-out">
+                <h2 class="h2 fw-bold text-center display-5 mb-5">Galeri</h2>
+                <!-- DESKTOP VIEW -->
+                <div class="row d-none d-lg-flex">
+                    <div class="col-4 img-1">
+                        <div class="w-100 h-100">
+                            <img class="object-fit-cover rounded-4 w-100 h-100" src="../static/galery/pict2.jpg" alt="" loading="lazy" />
+                        </div>
+                    </div>
+                    <div class="col-4 img-2">
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <div class="ratio ratio-1x1">
+                                    <img class="object-fit-cover rounded-4" src="../static/galery/pict5.jpg" alt="" loading="lazy" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="ratio ratio-1x1">
+                                    <img class="object-fit-cover rounded-4" src="../static/galery/pict1.jpg" alt="" loading="lazy" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <img class="object-fit-cover rounded-4 w-100 h-100" src="../static/galery/pict3.jpg" alt="" loading="lazy" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 img-3">
+                        <div class="h-100 w-100">
+                            <img class="object-fit-cover rounded-4 h-100 w-100" src="../static/galery/pict4.jpg" alt="" loading="lazy" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-block d-lg-none">
+                    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img class="galery-img object-fit-cover rounded-4 w-100 h-100" src="../static/galery/pict2.jpg" alt="" />
+                            </div>
+                            <div class="carousel-item">
+                                <img class="galery-img object-fit-cover rounded-4 w-100 h-100" src="../static/galery/pict5.jpg" alt="" />
+                            </div>
+                            <div class="carousel-item">
+                                <img class="galery-img object-fit-cover rounded-4 w-100 h-100" src="../static/galery/pict1.jpg" alt="" />
+                            </div>
+                            <div class="carousel-item">
+                                <img class="galery-img object-fit-cover rounded-4 w-100 h-100" src="../static/galery/pict3.jpg" alt="" />
+                            </div>
+                            <div class="carousel-item">
+                                <img class="galery-img object-fit-cover rounded-4 w-100 h-100" src="../static/galery/pict4.jpg" alt="" />
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <section class="container mb-5" data-aos="fade-up" data-aos-easing="ease-in-out">
+                <h2 class="h2 fw-bold text-center display-5 mb-5">Kata Mereka</h2>
+                <!-- ******************* MOBILE VIEW ******************* -->
+                <div id="testiCarousel" class="carousel slide d-block d-lg-none">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#testiCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#testiCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#testiCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                        <button type="button" data-bs-target="#testiCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                    </div>
+                    <div class="carousel-inner rounded-4">
+                        <div class="carousel-item rounded-4 active">
+                            <div class="col-12 col-lg-6 position-relative">
+                                <div class="d-flex flex-column justify-content-center">
+                                    <div class="img-fluid user-img position-absolute order-last">
+                                        <img src="../static/img/user.png" alt="" class="img-fluid" style="width: 4rem" />
+                                    </div>
+                                    <div class="testi-card d-flex align-items-center position-relative ps-5 order-first">
+                                        <div class="card rounded-4 card-red border-green">
+                                            <div class="card-body ps-5 py-4">
+                                                <p class="mb-4">"<strong>Ketahanan pangan</strong> merupakan suatu kondisi terpenuhinya kebutuhan pangan bagi rumah tangga yang tercermin dari tersedianya pangan secara cukup."</p>
+                                                <p class="fs-2 fw-bold mb-0">Betty K. Lahati, M.Si</p>
+                                                <small class="desc-text">Dosen Agroteknologi, Universitas Khairun (Tenaga Ahli Pertanian)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item rounded-4">
+                            <div class="col-12 col-lg-6 position-relative">
+                                <div class="d-flex flex-column justify-content-center">
+                                    <div class="img-fluid user-img position-absolute order-last">
+                                        <img src="../static/img/user.png" alt="" class="img-fluid" style="width: 4rem" />
+                                    </div>
+                                    <div class="testi-card d-flex align-items-center position-relative ps-5 order-first">
+                                        <div class="card rounded-4 card-red border-green">
+                                            <div class="card-body ps-5 py-4">
+                                                <p class="mb-4">"Program ini sangat membantu masyarakat terutama petani untuk mengembangkan perkebunan mereka"</p>
+                                                <p class="fs-2 fw-bold mb-0">Bambang Irwan</p>
+                                                <small class="desc-text">Ketua Rindang Kalumpang</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item rounded-4">
+                            <div class="col-12 col-lg-6 position-relative">
+                                <div class="d-flex flex-column justify-content-center">
+                                    <div class="img-fluid user-img position-absolute order-last">
+                                        <img src="../static/img/user.png" alt="" class="img-fluid" style="width: 4rem" />
+                                    </div>
+                                    <div class="testi-card d-flex align-items-center position-relative ps-5 order-first">
+                                        <div class="card rounded-4 card-red border-green">
+                                            <div class="card-body ps-5 py-4">
+                                                <p class="mb-4">"Terima kasih untuk Bank Indonesia yang telah membuat program yang sangat membantu petani di kelurahan Sasa"</p>
+                                                <p class="fs-2 fw-bold mb-0">Nurjana Andili</p>
+                                                <small class="desc-text">Ketua Rindang Sasa</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item rounded-4">
+                            <div class="col-12 col-lg-6 position-relative">
+                                <div class="d-flex flex-column justify-content-center">
+                                    <div class="img-fluid user-img position-absolute order-last">
+                                        <img src="../static/img/user.png" alt="" class="img-fluid" style="width: 4rem" />
+                                    </div>
+                                    <div class="testi-card d-flex align-items-center position-relative ps-5 order-first">
+                                        <div class="card rounded-4 card-red border-green">
+                                            <div class="card-body ps-5 py-4">
+                                                <p class="mb-4">
+                                                    "Program RINDANG sangat membantu petani di Fora dalam menangani proses pertanian secara teratur sehingga petani lebih mudah dalam manajemen produksi pertanian. Semoga program ini terus
+                                                    berkembang dan berkelanjutan kedepannya."
+                                                </p>
+                                                <p class="fs-2 fw-bold mb-0">Benyamin Abubakar</p>
+                                                <small class="desc-text">Ketua Rindang Foramadiahi</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#testiCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#testiCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                <!-- DESKTOP VIEW -->
+                <div class="row row-gap-4 d-none d-lg-flex">
+                    <div class="col-12 col-lg-6 position-relative">
+                        <div class="d-flex flex-column justify-content-center">
+                            <div class="img-fluid user-img position-absolute order-last">
+                                <img src="../static/img/user.png" alt="" class="img-fluid" style="width: 4.5rem" />
+                            </div>
+                            <div class="testi-card d-flex align-items-center position-relative ps-5 order-first">
+                                <div class="card shadow rounded-4 card-red border-0">
+                                    <div class="card-body ps-5 py-4">
+                                        <p class="mb-4">"<strong>Ketahanan pangan</strong> merupakan suatu kondisi terpenuhinya kebutuhan pangan bagi rumah tangga yang tercermin dari tersedianya pangan secara cukup."</p>
+                                        <p class="fs-2 fw-bold mb-0">Betty K. Lahati, M.Si</p>
+                                        <small class="desc-text">Dosen Agroteknologi, Universitas Khairun (Tenaga Ahli Pertanian)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 position-relative">
+                        <div class="d-flex flex-column justify-content-center">
+                            <div class="img-fluid user-img position-absolute order-last">
+                                <img src="../static/img/user.png" alt="" class="img-fluid" style="width: 4.5rem" />
+                            </div>
+                            <div class="testi-card d-flex align-items-center position-relative ps-5 order-first">
+                                <div class="card shadow rounded-4 card-red border-0">
+                                    <div class="card-body ps-5 py-4">
+                                        <p class="mb-4">"Program ini sangat membantu masyarakat terutama petani untuk mengembangkan perkebunan mereka"</p>
+                                        <p class="fs-2 fw-bold mb-0">Bambang Irwan</p>
+                                        <small class="desc-text">Ketua Rindang Kalumpang</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 position-relative">
+                        <div class="d-flex flex-column justify-content-center">
+                            <div class="img-fluid user-img position-absolute order-last">
+                                <img src="../static/img/user.png" alt="" class="img-fluid" style="width: 4.5rem" />
+                            </div>
+                            <div class="testi-card d-flex align-items-center position-relative ps-5 order-first">
+                                <div class="card shadow rounded-4 card-red border-0">
+                                    <div class="card-body ps-5 py-4">
+                                        <p class="mb-4">"Terima kasih untuk Bank Indonesia yang telah membuat program yang sangat membantu petani di kelurahan Sasa"</p>
+                                        <p class="fs-2 fw-bold mb-0">Nurjana Andili</p>
+                                        <small class="desc-text">Ketua Rindang Sasa</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 position-relative">
+                        <div class="d-flex flex-column justify-content-center">
+                            <div class="img-fluid user-img position-absolute order-last">
+                                <img src="../static/img/user.png" alt="" class="img-fluid" style="width: 4.5rem" />
+                            </div>
+                            <div class="testi-card d-flex align-items-center position-relative ps-5 order-first">
+                                <div class="card shadow rounded-4 card-red border-0">
+                                    <div class="card-body ps-5 py-4">
+                                        <p class="mb-4">
+                                            "Program RINDANG sangat membantu petani di Fora dalam menangani proses pertanian secara teratur sehingga petani lebih mudah dalam manajemen produksi pertanian. Semoga program ini terus berkembang
+                                            dan berkelanjutan kedepannya."
+                                        </p>
+                                        <p class="fs-2 fw-bold mb-0">Benyamin Abubakar</p>
+                                        <small class="desc-text">Ketua Rindang Foramadiahi</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="mb-5 bg-green-secondary" data-aos="fade-up" data-aos-easing="ease-in-out">
+                <div class="container py-5">
+                    <div class="text-center mb-5">
+                        <h2 class="h1 fw-bold display-5 mb-3">Kolaborator Rindang</h2>
+                        <p class="fs-4 text-dark-emphasis">
+                            Rindang bekerjasama dengan berbagai pihak dari lembaga hingga <br />
+                            instansi pemerintah untuk kelancaran program Rindang kedepan
+                        </p>
+                    </div>
+                    <div class="row d-md-none justify-content-center align-items-center">
+                        <!-- Mobile -->
+                        <div class="col-3 mb-3">
+                            <img class="img-fluid p-2" src="../static/logo/logo-BI.png" alt="" />
+                        </div>
+                        <div class="col-3 mb-3">
+                            <img class="img-fluid" src="../static/logo/Logo_Ternate_(1).png" alt="" />
+                        </div>
+                        <div class="col-3 mb-3">
+                            <img class="img-fluid" src="../static/logo/Universitas-Khairun-Logo.png" alt="" />
+                        </div>
+                        <div class="col-3 mb-3">
+                            <img class="img-fluid" src="../static/logo/RRI_Logo_2023.svg" alt="" />
+                        </div>
+                    </div>
+                    <div class="row d-none d-lg-block">
+                        <div class="col-12 d-flex logos justify-content-center gap-5">
+                            <img class="img-fluid" src="../static/logo/BI_Logo.png" alt="" />
+
+                            <img class="img-fluid" src="../static/logo/Logo_Ternate_(1).png" alt="" />
+
+                            <img class="img-fluid" src="../static/logo/Universitas-Khairun-Logo.png" alt="" />
+                            <img class="img-fluid" src="../static/logo/RRI_Logo_2023.svg" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="mb-5 py-5 container" data-aos="fade-up" data-aos-easing="ease-in-out">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="h2 fw-bold display-5 mb-5 text-center">Pertanyaan-Pertanyaan</h2>
+                        <div class="accordion" id="pertanyaan">
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#quest1" aria-expanded="true" aria-controls="quest1">
+                                        Bagaimana saya dapat bergabung dengan Program RINDANG?
+                                    </button>
+                                </h3>
+                                <div id="quest1" class="accordion-collapse collapse show" data-bs-parent="#pertanyaan">
+                                    <div class="accordion-body">
+                                        Anda dapat bergabung dengan Program <strong>RINDANG</strong> dengan menghubungi tim kami melalui kontak yang telah disediakan di situs web kami. Kami selalu membuka peluang bagi warga setempat dan
+                                        pihak yang tertarik untuk berpartisipasi dalam program ini, baik sebagai petani cabai, relawan, atau mitra.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#quest2" aria-expanded="false" aria-controls="quest2">Rindang itu apa sih?</button>
+                                </h3>
+                                <div id="quest2" class="accordion-collapse collapse" data-bs-parent="#pertanyaan">
+                                    <div class="accordion-body">
+                                        <p>Rindang dapat didefinisikan menjadi 2 hal berdasarkan lingkup kerjanya:</p>
+                                        <ol start="1">
+                                            <li>
+                                                Rindang sebagai Program Ketahanan Pangan dalam Kampung yang berfokus menyediakan kebutuhan pangan yang murah dan berkualitas sekaligus memberdayakan masyarakat baik petani maupun non-petani
+                                            </li>
+                                            <li>
+                                                Rindang sebagi ekosistem pasar yang menyediakan kebutuan yang diperlukan untuk mengaktivasi berbagai aktivitas pertanian yang berkelanjutan, membangun SDM yang kompeten di bidang pertanian,
+                                                serta memiliki koneksi ke jejaring pasar agar memudahkan penjualan hasil panen. RINDANG juga dapat dilihat sebagai framework (kerangka kerja) pertanian yang bisa diterapkan ke komoditas
+                                                holtikultura lainnya.
+                                            </li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#quest3" aria-expanded="false" aria-controls="quest3">
+                                        Apa manfaat yang diperoleh masyarakat dari Program ini?
+                                    </button>
+                                </h3>
+                                <div id="quest3" class="accordion-collapse collapse" data-bs-parent="#pertanyaan">
+                                    <div class="accordion-body">
+                                        <p>
+                                            Terdapat banyak manfaat yang bisa diperoleh masyarakat dari program RINDANG, salah satunya ketika terjadi kenaikan harga (inflasi) pangan khususnya cabai dan tomat, masyarakat tidak perlu khawatir
+                                            karena dengan adanya program RINDANG harga pangan yang ditawarkan jauh lebih murah dan terjangkau.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#quest4" aria-expanded="false" aria-controls="quest4">
+                                        Apakah ada pelatihan atau dukungan yang tersedia Untuk Para Petani
+                                    </button>
+                                </h3>
+                                <div id="quest4" class="accordion-collapse collapse" data-bs-parent="#pertanyaan">
+                                    <div class="accordion-body">
+                                        <p>
+                                            Tentu saja akan ada workshop dan pelatihan yang dilaksanakan untuk masyarakat dan petani agar dapat lebih maksimal produktivitas dalam bertani, dimana RINDANG juga menghadirkan beberapa penyuluh
+                                            pertanian yang kompeten di bidangnya untuk membantu petani dalam menghadapi masalah-masalah seputar pertanian yang bertujuan agar dapat menambah wawasan dan pengetahuan seputar pertanian bagi para
+                                            petani maupun masyarakat secara umum.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#quest5" aria-expanded="false" aria-controls="quest5">
+                                        Program ini bekerjasama dengan pihak apa saja?
+                                    </button>
+                                </h3>
+                                <div id="quest5" class="accordion-collapse collapse" data-bs-parent="#pertanyaan">
+                                    <div class="accordion-body">
+                                        <p>
+                                            Rindang berkolaborasi dengan beberapa pihak antara lain yaitu Bank Indonesia, Pemerintah Kota Ternate, Universitas Khairun, Radio Republik Indonesia dan di jalankan oleh komunitas Ternate Creative
+                                            Space. Kolaborasi ini diharapkan dapat melancarkan program rindang kedepan sehingga program ini dapat menjangkau lebih banyak petani di maluku utara.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="mb-5 bg-yellow-secondary py-5" data-aos="fade-up" data-aos-easing="ease-in-out">
+                <div class="container my-2">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card card-body bg-red border-0 rounded-5 py-0 px-5 d-lg-block d-none">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <div class="h1 fw-medium text-light mb-4">Gabung Bersama Kami Untuk Memulai Pertanian Berkelanjutan</div>
+                                        <div class="gap-4 d-flex">
+                                            <a href="{{ url_for('auth.register' ) }}" target="_blank" role="button" class="btn btn-light btn-lg">Gabung Sekarang</a>
+
+                                            <a
+                                                href="{{ url_for('static', filename='BOOKLET_RINDANG_ESSENTIALS_PRINT.pdf' ) }}"
+                                                onclick="downloadNotif()"
+                                                download="{{ url_for('static', filename='BOOKLET_RINDANG_ESSENTIALS_PRINT.pdf' ) }}"
+                                                role="button"
+                                                class="btn btn-outline-light btn-lg"
+                                                >Pelajari Lebih Lanjut</a
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="col-4 ps-5 pt-5">
+                                        <div class="ratio ratio-1x1">
+                                            <img class="object-fit-cover rounded-top-5" src="../static/galery/pict2.jpg" alt="" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card bg-red border-0 rounded-4 d-lg-none d-block">
+                                <div class="ratio ratio-16x9">
+                                    <img src="../static/galery/pict2.jpg" class="card-img-top object-fit-cover rounded-top-" alt="..." />
+                                </div>
+                                <div class="card-body">
+                                    <div class="h5 card-title text-light text-center mb-5">Gabung Bersama Kami Untuk Memulai Pertanian Berkelanjutan</div>
+                                    <div class="d-flex flex-column gap-2">
+                                        <a role="button" target="_blank" href="{{ url_for('auth.register' ) }}" class="btn btn-light">Gabung Sekarang</a>
+                                        <a role="button" href="#" onclick="downloadNotif()" download="{{ url_for('static', filename='BOOKLET_RINDANG_ESSENTIALS_PRINT.pdf' ) }}" class="btn btn-outline-light">Pelajari Lebih Lanjut</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="contact" class="container mb-5">
+                <div class="row">
+                    <div class="col-12 col-lg-6 mb-4 mb-lg-0">
+                        <div class="mb-4">
+                            <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='img/rindang-logo-green.svg' ) }}" alt="" /></a>
+                        </div>
+                        <div class="text-body-secondary mb-4 small">
+                            <strong>Benteng Orange</strong>
+                            <p>Creative Space X, Ternate Tengah</p>
+                        </div>
+                        <div class="text-body-secondary mb-4 small">
+                            <p class="mb-0">Telepon : +62 812 4403 6006</p>
+                            <p>Email : rindangternate@gmail.com</p>
+                        </div>
+                        <div class="d-flex gap-4">
+                            <a href="#" class="link-green fs-3"><ion-icon name="logo-facebook"></ion-icon></a>
+                            <a href="#" class="link-green fs-3"><ion-icon name="logo-instagram"></ion-icon></a>
+                            <a href="#" class="link-green fs-3"><ion-icon name="logo-youtube"></ion-icon></a>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-2 mb-4 mb-lg-0">
+                        <p>Kelurahan-Kelurahan</p>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Sasa</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Kalumpang</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Tubo</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Kulaba</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Foramadiahi</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Santiong</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kelurahan Fitu</a>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-2 mb-4 mb-lg-0">
+                        <p>Rindang</p>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Apa itu Rindang</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Pertanyaan-Pertanyaan</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Galeri</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Kolaborator</a>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-2 mb-4 mb-lg-0">
+                        <p>Kategori</p>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Pertanian Skala Besar</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Urban Farming</a>
+                            <a href="#" class="link-dark link-underline-opacity-0 link-opacity-50 link-opacity-100-hover small">Pertanian Skala Rumahan</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Modal -->
+
+        <!-- ++++++++++++++++++++++++ FOOTER ++++++++++++++++++++++++ -->
+        <footer class="bg-green py-4">
+            <div class="row">
+                <small class="col small text-center text-wrap flex-wrap">
+                    Copyright &copy; By <strong>Ternate Creative Space</strong>
+                    <br />
+                    All Rights Reserved 2024
+                </small>
+            </div>
+        </footer>
+
+        <!-- ++++++++++++++++++++++++ SCRIPTS PART ++++++++++++++++++++++++ -->
+        {{ toastr.include_toastr_js() }}
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                fetch('/api/get-price-data')
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const priceElement = document.querySelector('.cabai-price');
+                        const filteredData = data.filter((item) => item.name === 'Cabai Rawit Merah');
+                        if (filteredData.length > 0) {
+                            priceElement.textContent = filteredData[filteredData.length - 1].price + '/kg';
+                        }
+                    })
+                    .catch((error) => console.error('Error fetching price data:', error));
+            });
+        </script>
+        <script>
+            const notyf = new Notyf();
+
+            function downloadNotif() {
+                notyf.success('Berhasil Download');
+            }
+        </script>
+        <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Animasi header muncul
+                gsap.from('header', {
+                    y: -50,
+                    duration: 1.2,
+                    opacity: 0,
+                    delay: 0.5,
+                    ease: 'power2.out',
+                });
+
+                // Animasi gambar pada hero section
+                gsap.from('#hero-person', {
+                    y: 100,
+                    duration: 1,
+                    opacity: 0,
+                    delay: 1,
+                });
+
+                // Animasi headline di hero section
+                gsap.from('#hero-headline', {
+                    x: -100,
+                    duration: 1.2,
+                    opacity: 0,
+                    delay: 1.2,
+                    clearProps: 'all',
+                    ease: 'power2.out',
+                });
+
+                // Animasi card informasi
+                gsap.from('#info-card', {
+                    y: 50,
+                    duration: 1.2,
+                    opacity: 0,
+                    delay: 1.5,
+                });
+            });
+        </script>
+        <script>
+            const playBtn = document.getElementById('play-btn');
+            const playBtnIcon = document.getElementById('play-btn-icon');
+            //const pauseBtn = document.getElementById('pause-btn');
+            //const pauseBtnIcon = document.getElementById('pause-btn-icon');
+            const videoPlayer = document.getElementById('video-player');
+            const vdControls = document.createAttribute('controls');
+
+            function playVideo() {
+                videoPlayer.play();
+                playBtn.style.visibility = 'hidden';
+                videoPlayer.setAttributeNode(vdControls);
+            }
+
+            function pauseVideo() {
+                videoPlayer.pause();
+                pauseBtn.style.display = 'none';
+                videoPlayer.removeAttributeNode(vdControls);
+            }
+
+            function allTab() {
+                document.getElementById('pills-all').classList.add('active');
+                document.getElementById('all-tab-collapse').classList.add('show');
+                document.getElementById('pills-category').classList.remove('active');
+                document.getElementById('category-tab-collapse').classList.remove('show');
+                document.getElementById('tabs-content-2').style.display = 'none';
+                document.getElementById('tabs-content-1').style.display = 'block';
+            }
+
+            function categoryTab() {
+                document.getElementById('pills-category').classList.add('active');
+                document.getElementById('category-tab-collapse').classList.add('show');
+                document.getElementById('pills-all').classList.remove('active');
+                document.getElementById('all-tab-collapse').classList.remove('show');
+                document.getElementById('tabs-content-1').style.display = 'none';
+                document.getElementById('tabs-content-2').style.display = 'block';
+            }
+        </script>
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+        <script>
+            AOS.init();
+        </script>
+        <script>
+            const home = document.getElementById('hero-section');
+            const about = document.getElementById('about');
+            const galery = document.getElementById('galery');
+            const contact = document.getElementById('contact');
+            var mediaQuery = window.matchMedia('(max-width: 767.9px)');
+
+            function mdQuery(x) {
+                if (mediaQuery.matches) {
+                    home.addEventListener('click', function () {
+                        document.getElementById('navbarSupportedContent').classList.remove('show');
+                    });
+
+                    about.addEventListener('click', function () {
+                        document.getElementById('navbarSupportedContent').classList.remove('show');
+                    });
+
+                    galery.addEventListener('click', function () {
+                        document.getElementById('navbarSupportedContent').classList.remove('show');
+                    });
+
+                    contact.addEventListener('click', function () {
+                        document.getElementById('navbarSupportedContent').classList.remove('show');
+                    });
+                }
+            }
+
+            mdQuery(mediaQuery);
+
+            mediaQuery.addEventListener('change', function () {
+                mdQuery(mediaQuery);
+            });
+        </script>
+    </body>
+</html>
